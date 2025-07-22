@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
             ref: "Course"
         }
     ],
-    img:{
+    image:{
         type:String,
         required:true,
     },

@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer")
+require("dotenv").config();
 
 const mailSender = async (to, subject, htmlContent) => {
     try {
@@ -16,6 +17,8 @@ const mailSender = async (to, subject, htmlContent) => {
             subject,
             html: htmlContent,
         }
+
+        await transport.sendMail(mailOptions);
 
     } catch (error) {
         console.log(error.message);

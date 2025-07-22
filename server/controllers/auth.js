@@ -29,7 +29,7 @@ exports.sendOTP = async (req, res) => {
 
         const checkUserPresent = await User.findOne({ email });
 
-        if (checkUserPresent.length > 0) {
+        if (checkUserPresent) {
             return res.status(409).json({
                 success: false,
                 message: "User already exists"
@@ -160,7 +160,7 @@ exports.signUp = async (req, res) => {
             password: hashedPassword,
             accountType,
             additionalDetails: profileDetails._id,
-            image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}`
+            image: `https://api.dicebear.com/5.x/initials/svg?seed=${firstName}${lastName}`
         })
 
 
@@ -210,8 +210,8 @@ exports.login = async (req, res) => {
                 message: "Invalid email format"
             });
         }
-        const user = await User.findOne({ email });
-        console.log(user);
+        let user = await User.findOne({ email });
+        // console.log(user);
 
         if (!user) {
             return res.status(404).json({
