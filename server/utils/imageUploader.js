@@ -21,3 +21,21 @@ exports.uploadImageToCloudinary = async (file, folder, height, width, quality) =
         throw error;
     }
 };
+
+//for video
+
+exports.uploadVideoToCloudinary = async (file, folder) => {
+  try {
+    const options = {
+      folder: folder,
+      resource_type: "video",
+    };
+
+    const result = await cloudinary.uploader.upload(file.tempFilePath, options);
+    return result;
+
+  } catch (error) {
+    console.error("Cloudinary video upload error:", error);
+    throw error;
+  }
+};

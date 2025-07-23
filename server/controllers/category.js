@@ -54,6 +54,49 @@ exports.createCategory = async (req, res) => {
     }
 };
 
+
+// the problem with delete Category that what will happen to the courses that is in that category  
+// thats why this code is not in use
+
+// exports.deleteCategory = async (req, res) => {
+//   try {
+//     const categoryId = req.params.id;
+
+//     // Validate category ID format
+//     if (!categoryId || !mongoose.Types.ObjectId.isValid(categoryId)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid category ID",
+//       });
+//     }
+
+//     // Check if category exists
+//     const category = await Category.findById(categoryId);
+//     if (!category) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Category not found",
+//       });
+//     }
+
+//     // Delete the category
+//     await Category.findByIdAndDelete(categoryId);
+
+//     return res.status(200).json({
+//       success: true,
+//       message: `Category '${category.name}' deleted successfully`,
+//     });
+//   } catch (error) {
+//     console.error("Delete category error:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Something went wrong while deleting the category",
+//       error: error.message,
+//     });
+//   }
+// };
+
+
 //get all category only for admin
 
 exports.showAllCategories = async (req, res) => {

@@ -6,11 +6,27 @@ exports.createSection = async (req, res) => {
     try {
 
         const { sectionName, courseId } = req.body;
+        const userId = req.user.id;
 
         if (!sectionName || !courseId) {
             return res.status(400).json({
                 success: false,
                 message: "All details are required"
+            });
+        }
+
+        const course = await Course.findById(courseId);
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found",
+            });
+        }
+
+        if (course.instructor.toString() !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not the creator of this course",
             });
         }
 
@@ -55,8 +71,8 @@ exports.updateSection = async (req, res) => {
         const section = await Section.findByIdAndUpdate(sectionId, { $push: { sectionName } }, { new: true });
 
         return res.status(200).json({
-            success:true,
-            message:"Section name updated successfully"
+            success: true,
+            message: "Section name updated successfully"
         })
 
     } catch (error) {
@@ -68,17 +84,17 @@ exports.updateSection = async (req, res) => {
 }
 
 
-exports.deleteSection= async(req, res)=>{
+exports.deleteSection = async (req, res) => {
 
     try {
-        
-        const {sectionId}= req.params;
+
+        const { sectionId } = req.params;
 
         await Section.findByIdAndDelete(sectionId);
 
         return res.status(200).json({
-            success:true,
-            message:"Section deleted successfully"
+            success: true,
+            message: "Section deleted successfully"
         })
 
 

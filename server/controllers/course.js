@@ -23,7 +23,7 @@ exports.createCourse = async (req, res) => {
             })
         }
 
-        if (isNaN(price) || Number(price) <= 0) {
+        if (isNaN(price) || Number(price) < 0) {
             return res.status(400).json({
                 success: false,
                 message: "Price must be a positive number"
@@ -31,7 +31,7 @@ exports.createCourse = async (req, res) => {
         }
 
         //find userid from body
-        const userId = req.body.id;
+        const userId = req.user.id;
         const instructorDetails = await User.findById(userId);
 
         if (!instructorDetails) {
@@ -70,7 +70,7 @@ exports.createCourse = async (req, res) => {
         }
 
         //upload thumbnail to cloudinary
-        const thumbnailImage = await uploadImageToCloudinary(thumbnail, process.env.FOLDER_NAME)
+        const thumbnailImage = await uploadImageToCloudinary(thumbnail, `${process.env.FOLDER_NAME}/ThumbnailImages`)
 
         //create an entry in DB
         const newCourse = await Course.create({

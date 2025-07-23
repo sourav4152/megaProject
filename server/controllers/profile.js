@@ -148,7 +148,7 @@ exports.deleteAccount = async (req, res) => {
 exports.userAllDetails = async (req, res) => {
   try {
 
-    const userId = req.body.id;
+    const userId = req.user.id;
 
     const userDetails = await User.findById(userId)
       .populate("additionalDetails")

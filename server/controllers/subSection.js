@@ -1,6 +1,7 @@
+const mongoose = require("mongoose")
 const SubSection = require("../models/subSection")
 const Section = require("../models/section");
-const { uploadImageToCloudinary } = require("../utils/imageUploader");
+const { uploadVideoToCloudinary } = require("../utils/imageUploader");
 require("dotenv").config();
 
 const isFileTypeSupported = (type, supportedType) => {
@@ -20,11 +21,18 @@ exports.createSubSection = async (req, res) => {
                 message: "All field required"
             })
         }
+        if (!mongoose.Types.ObjectId.isValid(sectionId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid section ID"
+            });
+        }
+
 
 
         const supportedTypes = ["mp4", "mov", "avi", "wmv", "flv", "mkv", "webm", "m4v"];
 
-        const fileType = thumbnail.name.split(".")[1].toLowerCase();
+        const fileType = video.name.split(".")[1].toLowerCase();
 
         if (!isFileTypeSupported(fileType, supportedTypes)) {
             return res.status(422).json({
@@ -33,7 +41,8 @@ exports.createSubSection = async (req, res) => {
             })
         }
 
-        const uploadDetails = await uploadImageToCloudinary(video, process.env.FOLDER_NAME);
+        const uploadDetails = await uploadVideoToCloudinary(video, `${process.env.FOLDER_NAME}/CourseVideo`);
+
 
         const subSectionDetails = await SubSection.create({
             title,
@@ -46,16 +55,19 @@ exports.createSubSection = async (req, res) => {
 
 
         return res.status(201).json({
-            success:true,
-            message:"sub Section created successfully",
-            data:sectionUpdateDetails
+            success: true,
+            message: "sub Section created successfully",
+            data: sectionUpdateDetails
         })
 
 
     } catch (error) {
+        console.error(error);
+
         return res.status(500).json({
             success: false,
-            message: "something went wrong while creating Sub Sections"
+            message: "something went wrong while creating Sub Sections",
+
         })
     }
 }
