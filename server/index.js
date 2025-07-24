@@ -1,57 +1,68 @@
-const express= require("express")
-const app= express();
-
-//import routes
-const user= require("./routes/user")
-const profile= require("./routes/profile")
-// const{payment}= require("./routes/payment")
-const course= require("./routes/course")
-
-
+// Load environment variables
 require("dotenv").config();
 
-const database= require("./config/database");
-const cookieParser= require("cookie-parser");
-const cors= require("cors");
-const {cloudinaryConnect}= require("./config/cloudinary");
-const fileUpload= require("express-fileupload");
-
+// Basic server setup
+const express = require("express");
+const app = express();
 const PORT = process.env.PORT || 4000;
 
+// Middleware imports
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const fileUpload = require("express-fileupload");
+
+// Route imports
+const userRoutes = require("./routes/user");
+const profileRoutes = require("./routes/profile");
+const courseRoutes = require("./routes/course");
+// const paymentRoutes = require("./routes/payment");
+
+// Config imports
+const database = require("./config/database");
+const { cloudinaryConnect } = require("./config/cloudinary");
+
+// ========== Middleware Configurations ==========
+
+// Parse JSON bodies
 app.use(express.json());
+
+// Parse cookies
 app.use(cookieParser());
 
-app.use(
-    cors({
-        origin:"http://localhost:1573",
-        credentials:true
-    })
-)
+// Enable CORS
+app.use(cors({
+    origin: "http://localhost:1573", // Frontend URL
+    credentials: true
+}));
 
-app.use(
-    fileUpload({
-        useTempFiles:true,
-        tempFileDir:"/tmp"
-    })
-)
+// Handle file uploads
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp"
+}));
 
+// ========== Database & Cloudinary Setup ==========
 database.connect();
 cloudinaryConnect();
 
-app.use("/api/v1/auth", user)
-app.use("/api/v1/profile", profile)
-// app.use("/api/v1/payment", payment)
-app.use("/api/v1/course", course)
+// ========== Cron Jobs ==========
+require("./cron/deleteScheduledUsers"); // Schedules background user deletions
 
+// ========== Routes ==========
+app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/profile", profileRoutes);
+app.use("/api/v1/course", courseRoutes);
+// app.use("/api/v1/payment", paymentRoutes);
 
-
-app.get("/", (req,res)=>{
+// ========== Health Check ==========
+app.get("/", (req, res) => {
     return res.json({
-        success:true,
-        message:"your server is started"
-    })
-})
+        success: true,
+        message: "Your server is up and running!",
+    });
+});
 
-app.listen(PORT, ()=>{
-    console.log(`server started at ${PORT}`);  
-})
+// ========== Start Server ==========
+app.listen(PORT, () => {
+    console.log(`Server started at port ${PORT}`);
+});

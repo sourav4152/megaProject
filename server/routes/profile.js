@@ -6,7 +6,7 @@ const { resetPasswordToken, resetPassword } = require("../controllers/resetPassw
 
 
 
-route.delete("/deleteProfile", deleteAccount);
+route.delete("/deleteProfile",auth, deleteAccount);
 route.put("/updateProfile", auth, updateProfile);
 route.put("/updateDisplayPicture",auth ,updateProfilePicture)
 route.get("/getUserDetails", auth, userAllDetails);

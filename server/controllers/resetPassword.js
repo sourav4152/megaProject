@@ -1,32 +1,32 @@
 const User = require("../models/user")
 const crypto = require("node:crypto");
 const mailSender = require("../utils/mailSender");
-const bcrypt= require("bcrypt")
+const bcrypt = require("bcrypt")
 
 const isValidEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 
 exports.resetPasswordToken = async (req, res) => {
 
-    try {
-        const { email } = req.body;
+  try {
+    const { email } = req.body;
 
     if (!isValidEmail(email)) {
-        return res.status(422).json({
-            success: false,
-            message: "Email is Invalid"
-        })
+      return res.status(422).json({
+        success: false,
+        message: "Email is Invalid"
+      })
     }
 
     const existingUser = await User.findOne({ email });
 
     if (!existingUser) {
-        return res.status(404).json({
-            success: false,
-            message: "no existing user with this email"
-        })
+      return res.status(404).json({
+        success: false,
+        message: "no existing user with this email"
+      })
     }
 
     //creating  password token URL to UPdate password
@@ -34,11 +34,11 @@ exports.resetPasswordToken = async (req, res) => {
 
     //update existing user
     const updatedDetails = await User.findOneAndUpdate({ email: email },
-        {
-            token: token,
-            resetPasswordExpires: Date.now() + 10 * 60 * 1000
-        },
-        { new: true }
+      {
+        token: token,
+        resetPasswordExpires: Date.now() + 10 * 60 * 1000
+      },
+      { new: true }
     )
 
     const url = `http://localhost:5173/update-password/${token}`
@@ -46,22 +46,22 @@ exports.resetPasswordToken = async (req, res) => {
     //send mail
 
     await mailSender(email,
-        "Reset your password",
-        `<p>Click the link below to reset your password:</p>
+      "Reset your password",
+      `<p>Click the link below to reset your password:</p>
        <a href="${url}">${url}</a>
        <p>This link will expire in 15 minutes.</p>`)
-    
+
     return res.status(200).json({
-        success:true,
-        message:"Reset password link sent to your email"
-    })   
-    } catch (error) {
-        console.log("While sending Reset password email", error);
-        return res.status(500).json({
-            success:false,
-            message:"error while sending reset password link"
-        })
-    }
+      success: true,
+      message: "Reset password link sent to your email"
+    })
+  } catch (error) {
+    console.log("While sending Reset password email", error);
+    return res.status(500).json({
+      success: false,
+      message: "error while sending reset password link"
+    })
+  }
 }
 
 

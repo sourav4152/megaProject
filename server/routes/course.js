@@ -1,12 +1,12 @@
 const express= require("express");
 const route =express.Router();
 
-const {createCategory} =require("../controllers/category");
+const {createCategory, categoryPageDetails} =require("../controllers/category");
 
-const {createCourse, getCourseDetails} =require("../controllers/course");
+const {createCourse, getCourseDetails, getEnrolledCourses} =require("../controllers/course");
 
 
-const {showAllCategories} =require("../controllers/category")
+const {showAllCategories} =require("../controllers/category");
 
 
 const {createSection, updateSection, deleteSection} =require("../controllers/section")
@@ -21,11 +21,14 @@ const {auth, isInstructor, isStudent, isAdmin}= require("../middlewares/authMidd
 
 
 route.post("/createCategory", auth, isAdmin, createCategory);
+route.post("/categoryPageDetails",categoryPageDetails);
+
 route.post("/getCourseDetails",getCourseDetails);
 route.delete("/deleteCategory/:id",auth,isAdmin, );
 route.get("/showAllCategories",auth,showAllCategories);
 
 route.post("/createCourse", auth, isInstructor, createCourse);
+route.post("/getYourCourses", auth, getEnrolledCourses);
 
 
 route.post("/addSection", auth, isInstructor, createSection);

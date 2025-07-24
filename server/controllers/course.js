@@ -124,9 +124,9 @@ exports.showAllCourses = async (req, res) => {
         }).populate("instructor").exec();
 
         return res.status(200).json({
-            success:true,
-            message:"All courses sent successfully",
-            data:allCourses
+            success: true,
+            message: "All courses sent successfully",
+            data: allCourses
         })
 
 
@@ -144,44 +144,44 @@ exports.showAllCourses = async (req, res) => {
 
 //getCourseDetails 
 
-exports.getCourseDetails= async(req, res)=>{
+exports.getCourseDetails = async (req, res) => {
     try {
-        
-        const {courseId}= req.body;
 
-        const courseDetails= await Course.find({_id:courseId})
-        .populate(
-            {
-                path:"instructor",
-                populate:{
-                    path:"additionalDetails"
+        const { courseId } = req.body;
+
+        const courseDetails = await Course.find({ _id: courseId })
+            .populate(
+                {
+                    path: "instructor",
+                    populate: {
+                        path: "additionalDetails"
+                    }
                 }
-            }
-        )
-        .populate("category")
-        .populate("ratingAndReview")
-        .populate(
-            {
-                path:"courseContent",
-                populate:{
-                    path:"subSection"
+            )
+            .populate("category")
+            .populate("ratingAndReview")
+            .populate(
+                {
+                    path: "courseContent",
+                    populate: {
+                        path: "subSection"
+                    }
                 }
-            }
-        )
-        .exec();
+            )
+            .exec();
 
 
-        if(!courseDetails){
+        if (!courseDetails) {
             return res.status(404).json({
-                success:false,
-                message:"Course not found"
+                success: false,
+                message: "Course not found"
             })
         }
 
         return res.status(200).json({
-            success:true,
-            message:"Course details fetched successfully",
-            data:courseDetails
+            success: true,
+            message: "Course details fetched successfully",
+            data: courseDetails
         })
 
 
@@ -189,9 +189,64 @@ exports.getCourseDetails= async(req, res)=>{
     } catch (error) {
         console.log(error);
         return res.status(500).json({
-            success:false,
-            message:"something went wrong while fetching course details"
+            success: false,
+            message: "something went wrong while fetching course details"
         })
-        
+
     }
 }
+
+//get enrolled courses of user
+
+exports.getEnrolledCourses = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const userDetail = await User.findById(userId)
+            .populate({
+                path: "courses",
+                select: "courseName courseDescription ratingAndReview price thumbnail tag category status instructor",
+                populate: [
+                    {
+                        path: "instructor",
+                        select: "firstName lastName image courses",
+                        // populate: {
+                        //     path: "courses",
+                        //     select: "courseName courseDescription  thumbnail tag category ",
+
+                        //     populate: [
+                        //         {
+                        //             path: "category",
+                        //             select: "name description"
+                        //         }
+                        //     ]
+                        // }
+                    },
+                    {
+                        path: "category",
+                        select: "name description"
+                    }
+                ]
+            }).exec();
+
+        if (!userDetail) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Enrolled courses fetched successfully",
+            data: userDetail.courses,
+        });
+
+    } catch (error) {
+        console.error("Error fetching enrolled courses:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong while fetching enrolled courses",
+        });
+    }
+};

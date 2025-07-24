@@ -113,8 +113,7 @@ exports.updateProfilePicture = async (req, res) => {
 
 exports.deleteAccount = async (req, res) => {
   try {
-    const id = req.body.id;
-
+    const id = req.user.id;
     const userDetails = await User.findById(id);
 
     if (!userDetails) {
