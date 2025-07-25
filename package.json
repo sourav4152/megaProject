@@ -1,0 +1,26 @@
+{
+  "name": "megaproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm run dev --prefix client",
+    "server": "npm run dev --prefix server",
+    "dev": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"yellow,blue\" \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sourav4152/megaProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sourav4152/megaProject/issues"
+  },
+  "homepage": "https://github.com/sourav4152/megaProject#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
