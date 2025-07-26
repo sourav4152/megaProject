@@ -1,9 +1,10 @@
+import React from 'react'
 import './App.css'
 
-function App() {
 
+const App = () => {
   return (
-   <div className='text-2xl content-center'>this is home Page for StudyNotion</div>
+    <div className=' text-richblack-900 mt-16'>App</div>
   )
 }
 
