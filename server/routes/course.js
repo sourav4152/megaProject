@@ -25,7 +25,7 @@ route.post("/categoryPageDetails",categoryPageDetails);
 
 route.post("/getCourseDetails",getCourseDetails);
 route.delete("/deleteCategory/:id",auth,isAdmin, );
-route.get("/showAllCategories",auth,showAllCategories);
+route.get("/showAllCategories",showAllCategories);
 
 route.post("/createCourse", auth, isInstructor, createCourse);
 route.post("/getYourCourses", auth, getEnrolledCourses);
