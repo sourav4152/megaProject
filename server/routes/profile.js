@@ -10,8 +10,8 @@ route.delete("/deleteProfile",auth, deleteAccount);
 route.put("/updateProfile", auth, updateProfile);
 route.put("/updateDisplayPicture",auth ,updateProfilePicture)
 route.get("/getUserDetails", auth, userAllDetails);
-route.post("/reset-password-token",auth ,resetPasswordToken);
-route.post("/resetpassword", auth,resetPassword);
+route.post("/reset-password-token",resetPasswordToken);
+route.post("/resetpassword",resetPassword);
 
 
 module.exports= route;
