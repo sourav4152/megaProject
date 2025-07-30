@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
 
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
+import { useDispatch } from "react-redux"
+import { login } from '../../../services/operations/authAPI'
 
   const LoginForm = () => {
+
+    const navigate= useNavigate();
+    const dispatch= useDispatch();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -20,9 +25,13 @@ import { Link } from "react-router"
       [event.target.name]: event.target.value,
     }))
   }
+  const handleOnSubmit =(e)=>{
+    e.preventDefault();
+    dispatch(login(email, password, navigate));
+  }
 
   return (
-    <form
+    <form onSubmit={handleOnSubmit}
       className='mt-6 flex w-full flex-col gap-y-4'>
 
       <label className="w-full">
