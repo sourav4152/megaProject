@@ -1,6 +1,9 @@
 html, body{
     overflow-x: hidden;
 }
+button{
+  cursor: pointer;
+}
 
 .codeblock1 {
   width: 372.95px;
