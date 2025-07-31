@@ -6,6 +6,7 @@ import OpenRoute from './components/core/Auth/OpenRoute'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import About from './pages/About'
 import ForgotPassword from './pages/ForgotPassword'
 import UpdatePassword from './pages/UpdatePassword'
 import VerifyEmail from './pages/VerifyEmail'
@@ -56,6 +57,13 @@ const App = () => {
             </OpenRoute>
           }
         />
+
+        <Route path='about'
+          element={
+            <OpenRoute>
+              <About />
+            </OpenRoute>
+          } />  
 
       </Routes>
 
