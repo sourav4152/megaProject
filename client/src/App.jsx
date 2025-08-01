@@ -2,6 +2,8 @@ import React from 'react'
 import { Route, Routes } from 'react-router'
 
 import OpenRoute from './components/core/Auth/OpenRoute'
+import PrivateRoute from './components/core/Auth/PrivateRoute'
+// import ACCOUNT_TYPE  from './utils/constants'
 
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -11,6 +13,7 @@ import Contact from './pages/Contact'
 import ForgotPassword from './pages/ForgotPassword'
 import UpdatePassword from './pages/UpdatePassword'
 import VerifyEmail from './pages/VerifyEmail'
+import DashBoard from './pages/DashBoard'
 
 import Navbar from './components/common/Navbar'
 import './App.css'
@@ -72,6 +75,16 @@ const App = () => {
             <Contact />
             // </OpenRoute>
           } />
+
+        <Route path='dashboard/my-profile'
+          element={
+            <PrivateRoute>
+              <DashBoard />
+            </PrivateRoute>
+          }
+        >
+          {/* <Route path="dashboard/my-profile" element={<div></div>} /> */}
+        </Route>
 
       </Routes>
 
