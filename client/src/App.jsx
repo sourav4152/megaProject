@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import About from './pages/About'
+import Contact from './pages/Contact'
 import ForgotPassword from './pages/ForgotPassword'
 import UpdatePassword from './pages/UpdatePassword'
 import VerifyEmail from './pages/VerifyEmail'
@@ -34,7 +35,7 @@ const App = () => {
             <OpenRoute>
               <Signup />
             </OpenRoute>
-          } />    
+          } />
 
         <Route path='forgot-password'
           element={
@@ -60,10 +61,17 @@ const App = () => {
 
         <Route path='about'
           element={
-            <OpenRoute>
-              <About />
-            </OpenRoute>
-          } />  
+            // <OpenRoute>
+            <About />
+            //  </OpenRoute>
+          } />
+
+        <Route path='contact'
+          element={
+            // <OpenRoute>
+            <Contact />
+            // </OpenRoute>
+          } />
 
       </Routes>
 
