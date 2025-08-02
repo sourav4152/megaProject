@@ -16,6 +16,8 @@ import VerifyEmail from './pages/VerifyEmail'
 import DashBoard from './pages/DashBoard'
 
 import Navbar from './components/common/Navbar'
+import MyProfile from './components/core/dashboard/MyProfile'
+import Settings from './components/core/dashboard/settings/index'
 import './App.css'
 
 
@@ -76,14 +78,15 @@ const App = () => {
             // </OpenRoute>
           } />
 
-        <Route path='dashboard/my-profile'
+        <Route
           element={
             <PrivateRoute>
               <DashBoard />
             </PrivateRoute>
           }
         >
-          {/* <Route path="dashboard/my-profile" element={<div></div>} /> */}
+          <Route path="dashboard/my-profile" element={<MyProfile/>} />
+          <Route path="dashboard/Settings" element={<Settings />} />
         </Route>
 
       </Routes>
