@@ -1,5 +1,6 @@
 
 import ChangeProfilePicture from "./ChangeProfilePicture"
+import EditProfile from "./EditProfile"
 
 
 
@@ -12,7 +13,7 @@ export default function Settings() {
       <ChangeProfilePicture />
 
       {/* Edit Profile Information */}
-      {/* <EditProfile /> */}
+      <EditProfile />
 
       {/* Update Password */}
       {/* <UpdatePassword /> */}
