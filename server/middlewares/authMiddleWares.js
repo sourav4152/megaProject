@@ -5,28 +5,43 @@ require("dotenv").config();
 
 //auth
 exports.auth = async (req, res, next) => {
-    const authHeader = req.header("Authorization");
-    const token =
-        req.cookies.token ||
-        req.body.token ||
-        (authHeader && authHeader.replace("Bearer ", ""));
-
-    if (!token) {
-        return res.status(401).json({
-            success: false,
-            message: "Login again"
-        });
-    }
-
     try {
+        let token = null;
+
+        // Method 1: Check for token in the Authorization header (most reliable)
+        const authHeader = req.header("Authorization");
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            token = authHeader.replace("Bearer ", "");
+        }
+
+        // Method 2: Check for token in the request body
+        else if (req.body && req.body.token) {
+            token = req.body.token;
+        }
+
+        // Method 3: Check for token in cookies
+        else if (req.cookies && req.cookies.token) {
+            token = req.cookies.token;
+        }
+
+        // If no token is found, send a 401 response
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "No token found, authorization denied"
+            });
+        }
+
+        // Verify the token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        // console.log(decoded);
         req.user = decoded;
         next();
+
     } catch (error) {
+        // If the token is invalid, send a 401 response
         return res.status(401).json({
             success: false,
-            message: "Token is invalid"
+            message: "Token is invalid or expired"
         });
     }
 };
