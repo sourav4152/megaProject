@@ -210,7 +210,7 @@ exports.login = async (req, res) => {
                 message: "Invalid email format"
             });
         }
-        let user = await User.findOne({ email });
+        let user = await User.findOne({ email }).populate("additionalDetails").exec();
         // console.log(user);
 
         if (!user) {
