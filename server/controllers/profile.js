@@ -6,7 +6,14 @@ require("dotenv").config();
 
 exports.updateProfile = async (req, res) => {
   try {
-    const { dateOfBirth = "", about = "", contactNumber, gender } = req.body;
+    const {
+      firstName, // Include firstName
+      lastName,  // Include lastName
+      dateOfBirth = "",
+      about = "",
+      contactNumber,
+      gender
+    } = req.body;
     const userId = req.user.id;
 
     if (!userId) {
@@ -16,7 +23,7 @@ exports.updateProfile = async (req, res) => {
       });
     }
 
-
+    // Find the user details
     const userDetails = await User.findById(userId).populate("additionalDetails");
 
     if (!userDetails) {
@@ -26,21 +33,46 @@ exports.updateProfile = async (req, res) => {
       });
     }
 
-    const profile = userDetails.additionalDetails;
+    // Update the firstName and lastName fields on the User model
+    if (firstName) {
+      userDetails.firstName = firstName;
+    }
+    if (lastName) {
+      userDetails.lastName = lastName;
+    }
 
+    // Check if the profile exists, if not, create a new one
+    let profile = userDetails.additionalDetails;
+    if (!profile) {
+      profile = new Profile();
+      userDetails.additionalDetails = profile._id;
+    }
 
-    profile.dateOfBirth = dateOfBirth;
-    profile.about = about;
-    profile.contactNumber = contactNumber;
-    profile.gender = gender;
+    // Update the Profile fields
+    if (dateOfBirth) {
+      profile.dateOfBirth = dateOfBirth;
+    }
+    if (about) {
+      profile.about = about;
+    }
+    if (contactNumber) {
+      profile.contactNumber = contactNumber;
+    }
+    if (gender) {
+      profile.gender = gender;
+    }
 
-
+    // Save both the user and the profile documents
+    await userDetails.save();
     await profile.save();
+
+    // Fetch the updated user details with the new profile populated
+    const updatedUserDetails = await User.findById(userId).populate("additionalDetails");
 
     return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
-      profile
+      updatedUserDetails: updatedUserDetails, // Return the full updated user object
     });
 
   } catch (error) {
@@ -78,7 +110,7 @@ exports.updateProfilePicture = async (req, res) => {
     }
 
     const supportedTypes = ["jpeg", "png", "jpg"];
-    const fileType= displayPicture.name.split(".")[1].toLowerCase();
+    const fileType = displayPicture.name.split(".")[1].toLowerCase();
 
     if (!isFileTypeSupported(fileType, supportedTypes)) {
       return res.status(422).json({
