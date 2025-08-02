@@ -49,19 +49,29 @@ export function login(email, password, navigate) {
         const toastId = toast.loading("Loading...");
         dispatch(setLoading(true));
         try {
-            const response = await apiConnector("POST", LOGIN_API, { email, password, navigate });
+            // CORRECTED: `Maps` is a client-side function and should NOT be sent in the API payload.
+            // Sending it can cause the request to fail.
+            const response = await apiConnector("POST", LOGIN_API, { email, password });
 
             if (!response.data.success) {
                 throw new Error(response.data.message)
             }
 
             toast.success("Login Successful");
+
             dispatch(setToken(response.data.token))
+
             const userImage = response.data?.user?.image
                 ? response.data.user.image
                 : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.user.firstName} ${response.data.user.lastName}`
-            dispatch(setUser({ ...response.data.user, image: userImage }));
+
+            const userWithImage = { ...response.data.user, image: userImage };
+            dispatch(setUser(userWithImage));
+
             localStorage.setItem("token", JSON.stringify(response.data.token));
+            // NEW: Add this line to save the full user object to localStorage for persistence
+            localStorage.setItem("user", JSON.stringify(userWithImage));
+
             navigate("/dashboard/my-profile")
 
         } catch (error) {

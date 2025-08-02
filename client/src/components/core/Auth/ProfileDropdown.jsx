@@ -21,7 +21,7 @@ export default function ProfileDropdown() {
   if (!user) return null
 
   return (
-    <button className="relative" onClick={() => setOpen(true)}>
+    <div className="relative" onClick={() => setOpen(true)}>
       <div className="flex items-center gap-x-1">
         <img
           src={user?.image}
@@ -54,6 +54,6 @@ export default function ProfileDropdown() {
           </button>
         </div>
       )}
-    </button>
+    </div>
   )
 }
