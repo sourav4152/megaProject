@@ -8,6 +8,9 @@ import SidebarLink from './SidebarLink';
 import ConfirmationModal from '../../common/ConfirmationModal';
 import { logout } from '../../../services/operations/authAPI';
 
+//for Restore Account
+import RestoreAccount from './settings/RestoreAccount';
+
 const Sidebar = () => {
 
     const { user } = useSelector(state => state.profile)
@@ -71,6 +74,9 @@ const Sidebar = () => {
 
             {
                 isModalOpen && <ConfirmationModal modalData={modalData} />
+            }
+            {
+                user?.deletionScheduledAt && <RestoreAccount />
             }
 
         </div>

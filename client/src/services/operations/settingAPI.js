@@ -2,7 +2,7 @@ import { toast } from 'react-hot-toast'
 
 import { settingsEndpoints } from '../apis'
 import { apiConnector } from '../apiconnector'
-import {logout} from './authAPI'
+import { logout } from './authAPI'
 
 import { setUser } from '../../slices/profileSlice'
 
@@ -10,7 +10,8 @@ const {
   UPDATE_DISPLAY_PICTURE_API,
   UPDATE_PROFILE_API,
   CHANGE_PASSWORD_API,
-  DELETE_PROFILE_API
+  DELETE_PROFILE_API,
+  RESTORE_ACCOUNT_API
 } = settingsEndpoints;
 
 
@@ -131,4 +132,39 @@ export function deleteProfile(token,navigate){
     toast.dismiss(toastId)
   }
 
+}
+
+export function restoreAccount(token, navigate) {
+
+  return async (dispatch) => {
+    const toastId = toast.loading("Restoring...")
+
+    try {
+      const response = await apiConnector("PUT", RESTORE_ACCOUNT_API, null, {
+        Authorization: `Bearer ${token}`,
+      })
+      // console.log("UPDATE_PROFILE_API API RESPONSE............", response)
+
+      if (!response.data.success) {
+        throw new Error(response.data.message)
+      }
+
+      const userImage = response.data.userDetails.image
+        ? response.data.userDetails.image
+        : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.userDetails.firstName} ${response.data.userDetails.lastName}`
+
+
+      dispatch(
+        setUser({ ...response.data.userDetails, image: userImage })
+      )
+      toast.success("Account Restored Successfully")
+      navigate("/dashboard/my-profile")
+
+
+    } catch (error) {
+      console.log("UPDATE_PROFILE_API API ERROR............", error)
+      toast.error(error.response?.data?.message || error.message)
+    }
+    toast.dismiss(toastId);
+  }
 }
