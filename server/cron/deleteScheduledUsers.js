@@ -9,11 +9,17 @@ cron.schedule("0 0 * * *", async () => {
     const usersToDelete = await User.find({
       deletionScheduledAt: { $lte: now }
     });
+    const profileToDelete = await Profile.find({ deletionScheduledAt: { $lte: now } });
 
     for (const user of usersToDelete) {
-      await Profile.findByIdAndDelete(user.additionalDetails);
+      // await Profile.findByIdAndDelete(user.additionalDetails);
       await User.findByIdAndDelete(user._id);
       console.log(`[Cron] Deleted user: ${user.email}`);
+    }
+    for (const profile of profileToDelete){
+      await Profile.findByIdAndDelete(profile._id)
+      console.log(`[Cron] Deleted user: ${profile.contactNumber}`);
+      
     }
 
   } catch (error) {

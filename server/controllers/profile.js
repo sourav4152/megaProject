@@ -154,6 +154,12 @@ exports.deleteAccount = async (req, res) => {
         message: "User not found, try again"
       });
     }
+    const profileId = userDetails.additionalDetails;
+    const profileDetails = await Profile.findById(profileId);
+    if (profileDetails) {
+      profileDetails.deletionScheduledAt = Date.now() + 5 * 24 * 60 * 60 * 1000;
+      await profileDetails.save();
+    }
 
     // Schedule deletion 5 days later
     //don't forget to remove user from CourseEnrolled from course

@@ -22,6 +22,11 @@ const profileSchema = new mongoose.Schema({
         minlength: 10,
         maxLength: 15,
         match: [/^\d+$/, "Contact number must be digits only"]
+    },
+
+    deletionScheduledAt:{
+        type:Date,
+        default:null
     }
 
 })
