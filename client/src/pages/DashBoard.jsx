@@ -15,15 +15,15 @@ const DashBoard = () => {
 
     if (profileLoading || authLoading) {
         return (
-            // <div>
-            //     loading...
-            // </div>
-            <RingLoader
-                color="#6E5503"
-                size={200}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-            />
+            <div className=' flex justify-center items-center w-full h-screen '>
+                <RingLoader
+                    color="#6E5503"
+                    size={100}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                />
+            </div>
+
         )
     }
 

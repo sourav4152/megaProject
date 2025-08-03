@@ -25,3 +25,10 @@ export const settingsEndpoints = {
   DELETE_PROFILE_API: BASE_URL + "profile/deleteProfile",
   RESTORE_ACCOUNT_API: BASE_URL+"profile/restoreAccount"
 }
+
+//Profile Page API
+export const profileEndPoint={
+  GET_USER_DETAILS_API: BASE_URL + "profile/getUserDetails",
+  GET_USER_ENROLLED_COURSES_API: BASE_URL+ "course/getYourCourses",
+  
+}
