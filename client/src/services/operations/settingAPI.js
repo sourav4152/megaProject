@@ -2,13 +2,15 @@ import { toast } from 'react-hot-toast'
 
 import { settingsEndpoints } from '../apis'
 import { apiConnector } from '../apiconnector'
+import {logout} from './authAPI'
 
 import { setUser } from '../../slices/profileSlice'
 
 const {
   UPDATE_DISPLAY_PICTURE_API,
   UPDATE_PROFILE_API,
-  CHANGE_PASSWORD_API
+  CHANGE_PASSWORD_API,
+  DELETE_PROFILE_API
 } = settingsEndpoints;
 
 
@@ -102,4 +104,31 @@ export function updateProfile(token, formData, navigate) {
     }
     toast.dismiss(toastId)
   }
+}
+
+export function deleteProfile(token,navigate){
+
+  return async (dispatch)=>{
+    const toastId =toast.loading("deleting...")
+
+    try {
+      const response =await apiConnector("DELETE", DELETE_PROFILE_API, null, {
+        Authorization: `Bearer ${token}`
+      })
+
+      console.log("DELETE_PROFILE_API API RESPONSE............", response)
+
+      if (!response.data.success) {
+        throw new Error(response.data.message)
+      }
+
+      dispatch(logout(navigate))
+      
+    } catch (error) {
+      console.log("DELETE_PROFILE_API API ERROR............", error)
+      toast.error(error.response?.data?.message || error.message);
+    }
+    toast.dismiss(toastId)
+  }
+
 }

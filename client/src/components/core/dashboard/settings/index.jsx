@@ -2,6 +2,7 @@
 import ChangeProfilePicture from "./ChangeProfilePicture"
 import EditProfile from "./EditProfile"
 import UpdatePassword from "./UpdatePassword"
+import DeleteAccount from "./DeleteAccount"
 
 
 
@@ -20,7 +21,7 @@ export default function Settings() {
       <UpdatePassword />
 
       {/* Delete Account */}
-      {/* <DeleteAccount /> */}
+      <DeleteAccount />
 
 
     </div>
