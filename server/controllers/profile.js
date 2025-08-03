@@ -204,3 +204,52 @@ exports.userAllDetails = async (req, res) => {
     })
   }
 }
+
+// restore account that will set deletionScheduledAt null 
+
+exports.restoreAccount = async (req, res) => {
+  try {
+    const id = req.user.id;
+
+    // Fetch user details including additionalDetails
+    const userDetails = await User.findById(id).populate("additionalDetails").exec();
+
+    if (!userDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    // Check if the account was ever scheduled for deletion
+    if (userDetails.deletionScheduledAt === null) {
+      return res.status(400).json({
+        success: false,
+        message: "This account has not been scheduled for deletion."
+      });
+    }
+    
+    const profileId = userDetails.additionalDetails;
+    const profileDetails = await Profile.findById(profileId);
+
+    // Reset the deletion scheduled time to null for both User and Profile
+    userDetails.deletionScheduledAt = null;
+    profileDetails.deletionScheduledAt = null;
+
+    await profileDetails.save();
+    await userDetails.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Account Restored Successfully",
+      userDetails
+    });
+
+  } catch (error) {
+    console.error(error.message); 
+    return res.status(500).json({
+      success: false,
+      message: "Server error. Please try again after some time."
+    });
+  }
+};
