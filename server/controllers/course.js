@@ -205,11 +205,11 @@ exports.getEnrolledCourses = async (req, res) => {
         const userDetail = await User.findById(userId)
             .populate({
                 path: "courses",
-                select: "courseName courseDescription ratingAndReview price thumbnail tag category status instructor",
+                select: "courseName courseDescription courseContent ratingAndReview price thumbnail tag category status instructor",
                 populate: [
                     {
                         path: "instructor",
-                        select: "firstName lastName image courses",
+                        select: "firstName lastName image",
                         // populate: {
                         //     path: "courses",
                         //     select: "courseName courseDescription  thumbnail tag category ",
