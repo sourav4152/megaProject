@@ -3,7 +3,7 @@ const route =express.Router();
 
 const {createCategory, categoryPageDetails} =require("../controllers/category");
 
-const {createCourse, getCourseDetails, getEnrolledCourses} =require("../controllers/course");
+const {createCourse, getCourseDetails, getEnrolledCourses, getInstructorCourses,deleteCourse} =require("../controllers/course");
 
 
 const {showAllCategories} =require("../controllers/category");
@@ -29,6 +29,7 @@ route.get("/showAllCategories",showAllCategories);
 
 route.post("/createCourse", auth, isInstructor, createCourse);
 route.post("/getYourCourses", auth, getEnrolledCourses);
+route.put("/deleteCourse",auth, isInstructor,deleteCourse)
 
 
 route.post("/addSection", auth, isInstructor, createSection);
@@ -42,5 +43,6 @@ route.post("/createRating", auth ,isStudent, createRating);
 route.post("/getAverageRating", getAverageRating);
 route.post("/getReviews" , getAllRating);
 
+route.get("/getInstructorCourses",auth,isInstructor,getInstructorCourses)
 
 module.exports= route;

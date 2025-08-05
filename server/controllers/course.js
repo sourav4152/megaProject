@@ -250,3 +250,124 @@ exports.getEnrolledCourses = async (req, res) => {
         });
     }
 };
+
+//get instructor Courses
+exports.getInstructorCourses = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const userDetails = await User.findById(userId)
+            .populate({
+                path: "courses",
+                select: "courseName courseDescription price thumbnail status studentsEnrolled isDeleted", // Include isDeleted in select
+                match: { isDeleted: false }, // <--- ADDED: Filter out courses where isDeleted is true
+                populate: [
+                    {
+                        path: "courseContent",
+                        select: "sectionName subSection",
+                        populate: {
+                            path: "subSection",
+                            select: "title",
+                        },
+                    },
+                ],
+            })
+            .exec();
+
+        if (!userDetails) {
+            return res.status(404).json({
+                success: false,
+                message: "Instructor not found",
+            });
+        }
+
+        // Mongoose populate with `match` returns `null` for non-matching documents,
+        // so we need to filter out nulls from the courses array.
+        const nonDeletedCourses = userDetails.courses.filter(course => course !== null);
+
+
+        if (!nonDeletedCourses.length) { // Check the filtered array
+            return res.status(200).json({
+                success: true,
+                message: "Instructor has not created any active courses yet.", // Updated message
+                data: [],
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Instructor courses fetched successfully",
+            data: nonDeletedCourses, // Return the filtered array
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to retrieve instructor courses",
+            error: error.message,
+        });
+    }
+};
+
+exports.deleteCourse = async (req, res) => {
+    try {
+        const { courseId } = req.body;
+        const userId = req.user.id; // User ID from the authenticated request
+
+        // 1. Validate if the course exists
+        const course = await Course.findById(courseId);
+
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found."
+            });
+        }
+
+        // 2. Validate if the authenticated user is the owner (instructor) of the course
+        // Ensure course.instructor is a string or ObjectId for direct comparison
+        if (course.instructor.toString() !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not the owner of this course and cannot delete it."
+            });
+        }
+
+        // 3. Perform the soft delete: Mark 'isDeleted' as true
+        // Check if the course is already marked as deleted
+        if (course.isDeleted) {
+            return res.status(400).json({
+                success: false,
+                message: "This course has already been marked as deleted."
+            });
+        }
+
+        // MODIFIED: Use findByIdAndUpdate to perform a soft delete without full schema validation
+        const updatedCourse = await Course.findByIdAndUpdate(
+            courseId,
+            { isDeleted: true },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedCourse) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found after update attempt." // Should ideally not happen if found initially
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: "Course successfully marked for deletion (soft deleted).",
+            course: updatedCourse // Return the updated course document
+        });
+
+    } catch (error) {
+        console.error("Error deleting course (soft delete):", error); // Use console.error for better visibility
+        return res.status(500).json({
+            success: false,
+            message: "Failed to mark course for deletion. Please try again.",
+            error: error.message,
+        });
+    }
+};
