@@ -24,6 +24,7 @@
     "react-router": "^7.7.1",
     "react-spinners": "^0.17.0",
     "react-star-ratings": "^2.3.0",
+    "react-super-responsive-table": "^6.0.2",
     "react-type-animation": "^3.2.0",
     "redux-thunk": "^3.1.0",
     "tailwindcss": "^4.1.11"

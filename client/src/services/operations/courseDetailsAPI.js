@@ -1,10 +1,13 @@
-import {toast} from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
-import {apiConnector} from '../apiconnector'
+import { apiConnector } from '../apiconnector'
 import { courseEndpoints } from '../apis'
 
 
-const{GET_COURSE_AVERAGE_RATING_API}= courseEndpoints
+const { GET_COURSE_AVERAGE_RATING_API,
+        GET_ALL_INSTRUCTOR_COURSES_API,
+        DELETE_COURSE_API
+        } = courseEndpoints
 
 export const getAverageRatingsForCourses = async (courseIds) => {
     try {
@@ -41,3 +44,53 @@ export const getAverageRatingsForCourses = async (courseIds) => {
         return {};
     }
 };
+
+export const fetchInstructorCourses = async (token) => {
+  let result = []
+  // const toastId = toast.loading("Loading...")
+  try {
+    const response = await apiConnector(
+      "GET",
+      GET_ALL_INSTRUCTOR_COURSES_API,
+      null,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    )
+    // console.log("INSTRUCTOR COURSES API RESPONSE............", response)
+    if (!response?.data?.success) {
+      throw new Error("Could Not Fetch Instructor Courses")
+    }
+    result = response?.data?.data
+  } catch (error) {
+    console.log("INSTRUCTOR COURSES API ERROR............", error)
+    toast.error(error?.response?.data?.message || error.message)
+  }
+  // toast.dismiss(toastId)
+  return result
+}
+
+export const deleteCourse= async(courseId, token)=>{
+    // const toastId = toast.loading("Loading...")
+  try {
+    const response = await apiConnector(
+      "PUT",
+      DELETE_COURSE_API,
+      courseId,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    )
+    // console.log("INSTRUCTOR COURSES API RESPONSE............", response)
+    if (!response?.data?.success) {
+      throw new Error("Unable to Delete")
+    }
+    toast.success(response?.data?.message)
+    
+  } catch (error) {
+    console.log("DELETE COURSES API ERROR............", error)
+    toast.error(error?.response?.data?.message || error.message)
+  }
+  // toast.dismiss(toastId)
+
+}

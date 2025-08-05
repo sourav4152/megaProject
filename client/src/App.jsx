@@ -16,6 +16,7 @@ import VerifyEmail from './pages/VerifyEmail'
 import DashBoard from './pages/DashBoard'
 import EnrolledCourses from './components/core/dashboard/EnrolledCourses'
 import Cart from './components/core/dashboard/cart/index'
+import MyCourses from './components/core/dashboard/MyCourses'
 
 import Navbar from './components/common/Navbar'
 import MyProfile from './components/core/dashboard/MyProfile'
@@ -102,13 +103,20 @@ const App = () => {
             </PrivateRoute>
           }
         >
-          <Route path="dashboard/my-profile" element={<MyProfile/>} />
+          <Route path="dashboard/my-profile" element={<MyProfile />} />
           <Route path="dashboard/Settings" element={<Settings />} />
           {
             user?.accountType === ACCOUNT_TYPE.STUDENT && (
               <>
                 <Route path='dashboard/enrolled-courses' element={<EnrolledCourses />} />
                 <Route path="/dashboard/cart" element={<Cart />} />
+              </>
+            )
+          }
+          {
+            user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
+              <>
+                <Route path="dashboard/my-courses" element={<MyCourses />} />
               </>
             )
           }
