@@ -15,6 +15,7 @@ import UpdatePassword from './pages/UpdatePassword'
 import VerifyEmail from './pages/VerifyEmail'
 import DashBoard from './pages/DashBoard'
 import EnrolledCourses from './components/core/dashboard/EnrolledCourses'
+import Cart from './components/core/dashboard/cart/index'
 
 import Navbar from './components/common/Navbar'
 import MyProfile from './components/core/dashboard/MyProfile'
@@ -22,21 +23,21 @@ import Settings from './components/core/dashboard/settings/index'
 import './App.css'
 import { useDispatch, useSelector } from 'react-redux'
 
-import {ACCOUNT_TYPE}  from './utils/constants'
-import {getUserDetails} from './services/operations/profileAPI'
+import { ACCOUNT_TYPE } from './utils/constants'
+import { getUserDetails } from './services/operations/profileAPI'
 
 const App = () => {
 
   const dispatch = useDispatch();
-  const navigate= useNavigate();
-  const {user}= useSelector((state)=> state.profile)
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.profile)
 
-  useEffect( ()=>{
+  useEffect(() => {
     if (localStorage.getItem("token")) {
       const token = JSON.parse(localStorage.getItem("token"))
       dispatch(getUserDetails(token, navigate))
     }
-  },[])
+  }, [])
 
   return (
     <div className='w-screen min-h-screen bg-richblack-900 flex flex-col font-inter'>
@@ -106,7 +107,8 @@ const App = () => {
           {
             user?.accountType === ACCOUNT_TYPE.STUDENT && (
               <>
-                <Route path='dashboard/enrolled-courses' element={<EnrolledCourses/>}/>
+                <Route path='dashboard/enrolled-courses' element={<EnrolledCourses />} />
+                <Route path="/dashboard/cart" element={<Cart />} />
               </>
             )
           }

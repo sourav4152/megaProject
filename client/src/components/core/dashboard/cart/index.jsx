@@ -1,6 +1,8 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
+import RenderCartCourses from './RenderCartCourses'
+import RenderTotalAmount from './RenderTotalAmount'
 
 export default function Cart() {
 
@@ -25,7 +27,7 @@ export default function Cart() {
                             (
                                 <div className='flex flex-col-reverse lg:flex-row items-start mt-8 gap-x-10 gap-y-6' >
                                     <RenderCartCourses />
-                                    {/* <RenderTotalAmount /> */}
+                                    <RenderTotalAmount />
                                 </div>
                             )
                     }
