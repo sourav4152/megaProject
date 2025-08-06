@@ -17,26 +17,38 @@ import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css"
 import ConfirmationModal from '../../../common/ConfirmationModal'
 import { fetchInstructorCourses, deleteCourse } from '../../../../services/operations/courseDetailsAPI'
 
+const parseDurationToSeconds = (durationString) => {
+    if (!durationString) return 0;
+    const parts = durationString.split(':').map(Number);
+
+    if (parts.length === 2) { // Format: MM:SS
+        const [minutes, seconds] = parts;
+        return (minutes * 60) + seconds;
+    } else if (parts.length === 3) { // Format: HH:MM:SS
+        const [hours, minutes, seconds] = parts;
+        return (hours * 3600) + (minutes * 60) + seconds;
+    }
+    return 0; // Handle unexpected formats
+};
 
 const CoursesTable = ({ courses, setCourses }) => {
 
-    const { token } = useSelector((state) => state.auth)
-    const [loading, setLoading] = useState(false)
-    const [confirmationModal, setConfirmationModal] = useState(false)
-
+    const { token } = useSelector((state) => state.auth);
+    const [loading, setLoading] = useState(false);
+    const [confirmationModal, setConfirmationModal] = useState(false);
 
     const navigate = useNavigate();
 
     const handleCourseDelete = async (courseId) => {
-        setLoading(true)
-        await deleteCourse({ courseId: courseId }, token)
-        const result = await fetchInstructorCourses(token)
+        setLoading(true);
+        await deleteCourse({ courseId: courseId }, token);
+        const result = await fetchInstructorCourses(token);
         if (result) {
-            setCourses(result)
+            setCourses(result);
         }
-        setConfirmationModal(null)
-        setLoading(false)
-    }
+        setConfirmationModal(null);
+        setLoading(false);
+    };
 
     return (
         <>
@@ -110,12 +122,15 @@ const CoursesTable = ({ courses, setCourses }) => {
                                     </div>
                                 </Td>
                                 <Td className="text-sm font-medium text-richblack-100 mb-1 tracking-wider uppercase">
-                                    {course?.courseContent?.reduce((acc, sec) => {
-                                        sec?.subSection?.forEach(sub => {
-                                            acc += parseFloat(sub?.timeDuration) || 0;
-                                        });
-                                        return convertSecondsToDuration(acc);
-                                    }, 0)}
+                                    {/* MODIFIED: Use parseDurationToSeconds to sum up total seconds */}
+                                    {convertSecondsToDuration(
+                                        course?.courseContent?.reduce((totalSeconds, section) => {
+                                            section?.subSection?.forEach(sub => {
+                                                totalSeconds += parseDurationToSeconds(sub?.timeDuration);
+                                            });
+                                            return totalSeconds;
+                                        }, 0)
+                                    )}
                                 </Td>
 
                                 <Td className="text-sm font-medium text-richblack-100 mb-1 tracking-wider uppercase">
@@ -147,7 +162,7 @@ const CoursesTable = ({ courses, setCourses }) => {
                                                 btn2Handler: !loading
                                                     ? () => setConfirmationModal(null)
                                                     : () => { },
-                                            })
+                                            });
                                         }}
                                         title="Delete"
                                         className="px-1 transition-all duration-200 hover:scale-110 hover:text-[#ff0000]"
@@ -162,7 +177,7 @@ const CoursesTable = ({ courses, setCourses }) => {
             </Table>
             {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
         </>
-    )
-}
+    );
+};
 
 export default CoursesTable
