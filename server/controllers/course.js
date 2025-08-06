@@ -260,14 +260,14 @@ exports.getInstructorCourses = async (req, res) => {
             .populate({
                 path: "courses",
                 select: "courseName courseDescription price thumbnail status studentsEnrolled isDeleted", // Include isDeleted in select
-                match: { isDeleted: false }, // <--- ADDED: Filter out courses where isDeleted is true
+                match: { isDeleted: false }, // Filter out courses where isDeleted is true
                 populate: [
                     {
                         path: "courseContent",
                         select: "sectionName subSection",
                         populate: {
                             path: "subSection",
-                            select: "title",
+                            select: "title timeDuration", // ADDED: Select timeDuration for sub-sections
                         },
                     },
                 ],
@@ -345,7 +345,7 @@ exports.deleteCourse = async (req, res) => {
         // MODIFIED: Use findByIdAndUpdate to perform a soft delete without full schema validation
         const updatedCourse = await Course.findByIdAndUpdate(
             courseId,
-            { isDeleted: true },
+            { isDeleted: true, updatedAt: Date.now() },
             { new: true } // Return the updated document
         );
 
