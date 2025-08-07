@@ -73,7 +73,7 @@ const courseSchema = new mongoose.Schema({
     status:{
         type:String,
         enum:["Drafted", "Published"],
-        default: "Draft"
+        default: "Drafted"
     },
     isDeleted: { 
         type: Boolean,
