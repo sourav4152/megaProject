@@ -278,7 +278,7 @@ exports.getInstructorCourses = async (req, res) => {
         const userDetails = await User.findById(userId)
             .populate({
                 path: "courses",
-                select: "courseName courseDescription price thumbnail status studentsEnrolled createdAt updatedAt isDeleted", // Include isDeleted in select
+                select: "_id courseName courseDescription price thumbnail status studentsEnrolled createdAt updatedAt isDeleted", // Include isDeleted in select
                 match: { isDeleted: false }, // Filter out courses where isDeleted is true
                 populate: [
                     {
