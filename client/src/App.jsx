@@ -17,6 +17,7 @@ import DashBoard from './pages/DashBoard'
 import EnrolledCourses from './components/core/dashboard/EnrolledCourses'
 import Cart from './components/core/dashboard/cart/index'
 import MyCourses from './components/core/dashboard/MyCourses'
+import AddCourse from './components/core/dashboard/addCourse/index'
 
 import Navbar from './components/common/Navbar'
 import MyProfile from './components/core/dashboard/MyProfile'

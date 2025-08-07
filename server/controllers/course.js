@@ -11,102 +11,121 @@ function isFileTypeSupported(type, supportedTypes) {
 
 //createCourse handler function
 exports.createCourse = async (req, res) => {
-    try {
+  try {
+    const userId = req.user.id;
 
-        const { courseName, courseDescription, whatYouWillLearn, price, category } = req.body;
-        const thumbnail = req.files.thumbnailImage;
+    // Destructure all fields from the request body
+    const {
+      courseName,
+      courseDescription,
+      whatYouWillLearn,
+      price,
+      tag, 
+      category,
+      status,
+      instruction, 
+    } = req.body;
 
-        if (!courseName || !courseDescription || !whatYouWillLearn || !price || !category) {
-            return res.status(400).json({
-                success: false,
-                message: "All fields are required"
-            })
-        }
+    // Get thumbnail file from request files
+    const thumbnail = req.files.thumbnailImage;
 
-        if (isNaN(price) || Number(price) < 0) {
-            return res.status(400).json({
-                success: false,
-                message: "Price must be a positive number"
-            });
-        }
-
-        //find userid from body
-        const userId = req.user.id;
-        const instructorDetails = await User.findById(userId);
-
-        if (!instructorDetails) {
-            return res.status(404).json({
-                success: false,
-                message: "Instructor Details not found"
-            })
-        }
-        if (instructorDetails.accountType !== "Instructor") {
-            return res.status(401).json({
-                success: false,
-                message: "User is not an instructor"
-            });
-        }
-
-        //validation for category
-
-        const categoryDetails = await Category.findById(category);
-
-        if (!categoryDetails) {
-            return res.status(404).json({
-                success: false,
-                message: "Invalid Category"
-            })
-        }
-
-        const supportedTypes = ["jpg", "jpeg", "png"];
-
-        const fileType = thumbnail.name.split(".")[1].toLowerCase();
-
-        if (!isFileTypeSupported(fileType, supportedTypes)) {
-            return res.status(422).json({
-                success: false,
-                message: "file formate is not supported"
-            })
-        }
-
-        //upload thumbnail to cloudinary
-        const thumbnailImage = await uploadImageToCloudinary(thumbnail, `${process.env.FOLDER_NAME}/ThumbnailImages`)
-
-        //create an entry in DB
-        const newCourse = await Course.create({
-            courseName,
-            courseDescription,
-            instructor: instructorDetails._id,
-            whatYouWillLearn,
-            categories: categoryDetails._id,
-            price,
-            thumbnail: thumbnailImage.secure_url
-        })
-
-        //update user 
-        //add new course to users courses
-        await User.findByIdAndUpdate({ _id: instructorDetails._id },
-            {
-                $push: { courses: newCourse._id }
-            }
-        )
-        // add course id in Category 
-        await Category.findByIdAndUpdate({ _id: categoryDetails._id }, { $push: { course: newCourse._id } })
-
-        return res.status(201).json({
-            success: true,
-            message: "Course created successfully",
-            data: newCourse
-        })
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            success: false,
-            message: "Something went wrong while creating course"
-        });
+    // 1. Basic validation for all required fields
+    if (
+      !courseName ||
+      !courseDescription ||
+      !whatYouWillLearn ||
+      !price ||
+      !tag ||
+      !category ||
+      !thumbnail
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields are missing.",
+      });
     }
-}
+
+    // 2. Validate price as a positive number
+    if (isNaN(price) || Number(price) <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Price must be a positive number.",
+      });
+    }
+
+    // 3. Check if the user is an instructor
+    const instructorDetails = await User.findById(userId);
+    if (!instructorDetails || instructorDetails.accountType !== "Instructor") {
+      return res.status(401).json({
+        success: false,
+        message: "User is not an instructor.",
+      });
+    }
+
+    // 4. Validate category
+    const categoryDetails = await Category.findById(category);
+    if (!categoryDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "Invalid Category.",
+      });
+    }
+
+    // 5. Validate and upload thumbnail
+    const supportedTypes = ["jpg", "jpeg", "png"];
+    const fileType = thumbnail.name.split(".")[1].toLowerCase();
+    if (!isFileTypeSupported(fileType, supportedTypes)) {
+      return res.status(422).json({
+        success: false,
+        message: "File format is not supported.",
+      });
+    }
+
+    const thumbnailImage = await uploadImageToCloudinary(
+      thumbnail,
+      `${process.env.FOLDER_NAME}/ThumbnailImages`
+    );
+
+    // 6. Create the new course entry in the database
+    const newCourse = await Course.create({
+      courseName,
+      courseDescription,
+      whatYouWillLearn,
+      price,
+      tag: JSON.parse(tag),
+      category: categoryDetails._id, 
+      instructor: instructorDetails._id,
+      thumbnail: thumbnailImage.secure_url,
+      status: status || "Drafted", 
+      instruction: instruction ? JSON.parse(instruction) : [],
+    });
+
+    // 7. Update User model with the new course
+    await User.findByIdAndUpdate(
+      { _id: instructorDetails._id },
+      { $push: { courses: newCourse._id } }
+    );
+    
+    // 8. Update Category model with the new course
+    await Category.findByIdAndUpdate(
+      { _id: categoryDetails._id },
+      { $push: { course: newCourse._id } }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Course created successfully.",
+      data: newCourse,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while creating the course.",
+    //   error: error.message,
+    });
+  }
+};
 
 
 //get all courses
