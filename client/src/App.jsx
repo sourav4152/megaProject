@@ -118,6 +118,7 @@ const App = () => {
             user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
               <>
                 <Route path="dashboard/my-courses" element={<MyCourses />} />
+                <Route path='dashboard/add-course' element={<AddCourse/>} />
               </>
             )
           }
