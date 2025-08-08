@@ -13,6 +13,7 @@ import IconBtn from '../../../../common/IconBtn';
 
 import {
     addCourseDetails,
+    editCourseDetails,
     fetchCourseCategories,
 } from '../../../../../services/operations/courseDetailsAPI';
 import { setCourse, setStep } from '../../../../../slices/courseSlice'
@@ -107,7 +108,7 @@ const CourseInformationForm = () => {
                 }
                 setLoading(true);
                 // The `editCourseDetails` call is commented out, but this is where it would go
-                // const result = await editCourseDetails(formData, token);
+                const result = await editCourseDetails(formData, token);
                 setLoading(false);
                 if (result) {
                     dispatch(setStep(2));
