@@ -11,125 +11,194 @@ function isFileTypeSupported(type, supportedTypes) {
 
 //createCourse handler function
 exports.createCourse = async (req, res) => {
-  try {
-    const userId = req.user.id;
+    try {
+        const userId = req.user.id;
 
-    // Destructure all fields from the request body
-    const {
-      courseName,
-      courseDescription,
-      whatYouWillLearn,
-      price,
-      tag, 
-      category,
-      status,
-      instruction, 
-    } = req.body;
+        // Destructure all fields from the request body
+        const {
+            courseName,
+            courseDescription,
+            whatYouWillLearn,
+            price,
+            tag,
+            category,
+            status,
+            instruction,
+        } = req.body;
 
-    // Get thumbnail file from request files
-    const thumbnail = req.files.thumbnailImage;
+        // Get thumbnail file from request files
+        const thumbnail = req.files.thumbnailImage;
 
-    // 1. Basic validation for all required fields
-    if (
-      !courseName ||
-      !courseDescription ||
-      !whatYouWillLearn ||
-      !price ||
-      !tag ||
-      !category ||
-      !thumbnail
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "All required fields are missing.",
-      });
+        // 1. Basic validation for all required fields
+        if (
+            !courseName ||
+            !courseDescription ||
+            !whatYouWillLearn ||
+            !price ||
+            !tag ||
+            !category ||
+            !thumbnail
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "All required fields are missing.",
+            });
+        }
+
+        // 2. Validate price as a positive number
+        if (isNaN(price) || Number(price) <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Price must be a positive number.",
+            });
+        }
+
+        // 3. Check if the user is an instructor
+        const instructorDetails = await User.findById(userId);
+        if (!instructorDetails || instructorDetails.accountType !== "Instructor") {
+            return res.status(401).json({
+                success: false,
+                message: "User is not an instructor.",
+            });
+        }
+
+        // 4. Validate category
+        const categoryDetails = await Category.findById(category);
+        if (!categoryDetails) {
+            return res.status(404).json({
+                success: false,
+                message: "Invalid Category.",
+            });
+        }
+
+        // 5. Validate and upload thumbnail
+        const supportedTypes = ["jpg", "jpeg", "png"];
+        const fileType = thumbnail.name.split(".")[1].toLowerCase();
+        if (!isFileTypeSupported(fileType, supportedTypes)) {
+            return res.status(422).json({
+                success: false,
+                message: "File format is not supported.",
+            });
+        }
+
+        const thumbnailImage = await uploadImageToCloudinary(
+            thumbnail,
+            `${process.env.FOLDER_NAME}/ThumbnailImages`
+        );
+
+        // 6. Create the new course entry in the database
+        const newCourse = await Course.create({
+            courseName,
+            courseDescription,
+            whatYouWillLearn,
+            price,
+            tag: JSON.parse(tag),
+            category: categoryDetails._id,
+            instructor: instructorDetails._id,
+            thumbnail: thumbnailImage.secure_url,
+            status: status || "Drafted",
+            instruction: instruction ? JSON.parse(instruction) : [],
+        });
+
+        // 7. Update User model with the new course
+        await User.findByIdAndUpdate(
+            { _id: instructorDetails._id },
+            { $push: { courses: newCourse._id } }
+        );
+
+        // 8. Update Category model with the new course
+        await Category.findByIdAndUpdate(
+            { _id: categoryDetails._id },
+            { $push: { course: newCourse._id } }
+        );
+
+        return res.status(201).json({
+            success: true,
+            message: "Course created successfully.",
+            data: newCourse,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while creating the course.",
+            //   error: error.message,
+        });
     }
-
-    // 2. Validate price as a positive number
-    if (isNaN(price) || Number(price) <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Price must be a positive number.",
-      });
-    }
-
-    // 3. Check if the user is an instructor
-    const instructorDetails = await User.findById(userId);
-    if (!instructorDetails || instructorDetails.accountType !== "Instructor") {
-      return res.status(401).json({
-        success: false,
-        message: "User is not an instructor.",
-      });
-    }
-
-    // 4. Validate category
-    const categoryDetails = await Category.findById(category);
-    if (!categoryDetails) {
-      return res.status(404).json({
-        success: false,
-        message: "Invalid Category.",
-      });
-    }
-
-    // 5. Validate and upload thumbnail
-    const supportedTypes = ["jpg", "jpeg", "png"];
-    const fileType = thumbnail.name.split(".")[1].toLowerCase();
-    if (!isFileTypeSupported(fileType, supportedTypes)) {
-      return res.status(422).json({
-        success: false,
-        message: "File format is not supported.",
-      });
-    }
-
-    const thumbnailImage = await uploadImageToCloudinary(
-      thumbnail,
-      `${process.env.FOLDER_NAME}/ThumbnailImages`
-    );
-
-    // 6. Create the new course entry in the database
-    const newCourse = await Course.create({
-      courseName,
-      courseDescription,
-      whatYouWillLearn,
-      price,
-      tag: JSON.parse(tag),
-      category: categoryDetails._id, 
-      instructor: instructorDetails._id,
-      thumbnail: thumbnailImage.secure_url,
-      status: status || "Drafted", 
-      instruction: instruction ? JSON.parse(instruction) : [],
-    });
-
-    // 7. Update User model with the new course
-    await User.findByIdAndUpdate(
-      { _id: instructorDetails._id },
-      { $push: { courses: newCourse._id } }
-    );
-    
-    // 8. Update Category model with the new course
-    await Category.findByIdAndUpdate(
-      { _id: categoryDetails._id },
-      { $push: { course: newCourse._id } }
-    );
-
-    return res.status(201).json({
-      success: true,
-      message: "Course created successfully.",
-      data: newCourse,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "An error occurred while creating the course.",
-    //   error: error.message,
-    });
-  }
 };
+
+//editCourse handler function
+exports.editCourse = async (req, res) => {
+    try {
+        const { courseId } = req.body;
+        const updates = req.body;
+        const course = await Course.findById(courseId);
+
+        if (!course) {
+            return res.status(404).json({ 
+                success: false,
+                message: "Course not found",
+                error: "Course not found" });
+        }
+
+        if (req.files) {
+            console.log("thumbnail update");
+            const thumbnail = req.files.thumbnailImage;
+            const thumbnailImage = await uploadImageToCloudinary(
+                thumbnail,
+                `${process.env.FOLDER_NAME}/ThumbnailImages`
+            );
+            course.thumbnail = thumbnailImage.secure_url;
+        }
+
+        for (const key in updates) {
+            if (updates.hasOwnProperty(key)) {
+                if (key === "tag" || key === "instructions") {
+                    course[key] = JSON.parse(updates[key]);
+                } else {
+                    course[key] = updates[key];
+                }
+            }
+        }
+
+        await course.save();
+
+        const updatedCourse = await Course.findOne({
+            _id: courseId,
+        })
+            .populate({
+                path: "instructor",
+                populate: {
+                    path: "additionalDetails",
+                },
+            })
+            .populate("category")
+            .populate("ratingAndReviews")
+            .populate({
+                path: "courseContent",
+                populate: {
+                    path: "subSection",
+                },
+            })
+            .exec();
+
+        res.json({
+            success: true,
+            message: "Course updated successfully",
+            data: updatedCourse,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+}
 
 
 //get all courses
-
 exports.showAllCourses = async (req, res) => {
     try {
 
