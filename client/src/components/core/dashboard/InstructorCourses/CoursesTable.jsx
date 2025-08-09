@@ -19,16 +19,23 @@ import { fetchInstructorCourses, deleteCourse } from '../../../../services/opera
 
 const parseDurationToSeconds = (durationString) => {
     if (!durationString) return 0;
-    const parts = durationString.split(':').map(Number);
-
-    if (parts.length === 2) { // Format: MM:SS
-        const [minutes, seconds] = parts;
-        return (minutes * 60) + seconds;
-    } else if (parts.length === 3) { // Format: HH:MM:SS
-        const [hours, minutes, seconds] = parts;
-        return (hours * 3600) + (minutes * 60) + seconds;
+    
+    // Check if the string contains a colon, indicating a time format
+    if (durationString.includes(':')) {
+        const parts = durationString.split(':').map(Number);
+        if (parts.length === 2) { // Format: MM:SS
+            const [minutes, seconds] = parts;
+            return (minutes * 60) + seconds;
+        } else if (parts.length === 3) { // Format: HH:MM:SS
+            const [hours, minutes, seconds] = parts;
+            return (hours * 3600) + (minutes * 60) + seconds;
+        }
+    } else {
+        // If no colon, treat it as a number in seconds
+        return parseFloat(durationString) || 0;
     }
-    return 0; // Handle unexpected formats
+    
+    return 0; // Handle any other unexpected formats
 };
 
 const CoursesTable = ({ courses, setCourses }) => {
