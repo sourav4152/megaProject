@@ -303,29 +303,20 @@ exports.getEnrolledCourses = async (req, res) => {
         const userDetail = await User.findById(userId)
             .populate({
                 path: "courses",
-                select: "courseName courseDescription courseContent ratingAndReview price thumbnail tag category status instructor",
+                select: "_id courseName courseDescription price thumbnail status studentsEnrolled createdAt updatedAt isDeleted", // Include isDeleted in select
+                match: { isDeleted: false }, // Filter out courses where isDeleted is true
                 populate: [
                     {
-                        path: "instructor",
-                        select: "firstName lastName image",
-                        // populate: {
-                        //     path: "courses",
-                        //     select: "courseName courseDescription  thumbnail tag category ",
-
-                        //     populate: [
-                        //         {
-                        //             path: "category",
-                        //             select: "name description"
-                        //         }
-                        //     ]
-                        // }
+                        path: "courseContent",
+                        select: "sectionName subSection",
+                        populate: {
+                            path: "subSection",
+                            select: "title timeDuration", // ADDED: Select timeDuration for sub-sections
+                        },
                     },
-                    {
-                        path: "category",
-                        select: "name description"
-                    }
-                ]
-            }).exec();
+                ],
+            })
+            .exec();
 
         if (!userDetail) {
             return res.status(404).json({
