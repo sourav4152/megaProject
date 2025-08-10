@@ -132,17 +132,18 @@ exports.editCourse = async (req, res) => {
     try {
         const { courseId } = req.body;
         const updates = req.body;
+
         const course = await Course.findById(courseId);
 
         if (!course) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
                 message: "Course not found",
-                error: "Course not found" });
+            });
         }
 
+        // Handle thumbnail image update if a new file is uploaded
         if (req.files) {
-            console.log("thumbnail update");
             const thumbnail = req.files.thumbnailImage;
             const thumbnailImage = await uploadImageToCloudinary(
                 thumbnail,
@@ -151,9 +152,17 @@ exports.editCourse = async (req, res) => {
             course.thumbnail = thumbnailImage.secure_url;
         }
 
-        for (const key in updates) {
-            if (updates.hasOwnProperty(key)) {
-                if (key === "tag" || key === "instructions") {
+        // Safely iterate over updates using Object.keys()
+        for (const key of Object.keys(updates)) {
+            // Skip the courseId field and other non-updatable fields
+            if (key === "courseId" || key === "_id") {
+                continue;
+            }
+
+            // Check if the key exists in the course document before updating
+            if (course[key] !== undefined) {
+                // Handle special cases for JSON strings (e.g., tags, instructions)
+                if (key === "tag" || key === "instruction") {
                     course[key] = JSON.parse(updates[key]);
                 } else {
                     course[key] = updates[key];
@@ -173,7 +182,7 @@ exports.editCourse = async (req, res) => {
                 },
             })
             .populate("category")
-            .populate("ratingAndReviews")
+            .populate("ratingAndReview")
             .populate({
                 path: "courseContent",
                 populate: {
@@ -195,7 +204,8 @@ exports.editCourse = async (req, res) => {
             error: error.message,
         });
     }
-}
+};
+
 
 
 //get all courses
