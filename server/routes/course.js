@@ -29,7 +29,7 @@ route.get("/showAllCategories",showAllCategories);
 
 route.post("/createCourse", auth, isInstructor, createCourse);
 route.post("/getYourCourses", auth, getEnrolledCourses);
-route.put("/updateCourse",auth,isInstructor,editCourse)
+route.post("/updateCourse",auth,isInstructor,editCourse)
 route.put("/deleteCourse",auth, isInstructor,deleteCourse)
 
 
