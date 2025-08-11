@@ -132,6 +132,7 @@ exports.editCourse = async (req, res) => {
     try {
         const { courseId } = req.body;
         const updates = req.body;
+        const userId = req.user.id; // Get user ID from the request for authorization
 
         const course = await Course.findById(courseId);
 
@@ -142,6 +143,17 @@ exports.editCourse = async (req, res) => {
             });
         }
 
+        // Security check: Ensure the user is the instructor of the course
+        if (course.instructor.toString() !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: "You are not the owner of this course and cannot edit it.",
+            });
+        }
+        
+        // Prepare the updates to be applied
+        let updateData = { ...updates };
+
         // Handle thumbnail image update if a new file is uploaded
         if (req.files) {
             const thumbnail = req.files.thumbnailImage;
@@ -149,47 +161,45 @@ exports.editCourse = async (req, res) => {
                 thumbnail,
                 `${process.env.FOLDER_NAME}/ThumbnailImages`
             );
-            course.thumbnail = thumbnailImage.secure_url;
+            updateData.thumbnail = thumbnailImage.secure_url;
         }
 
-        // Safely iterate over updates using Object.keys()
-        for (const key of Object.keys(updates)) {
-            // Skip the courseId field and other non-updatable fields
-            if (key === "courseId" || key === "_id") {
-                continue;
-            }
-
-            // Check if the key exists in the course document before updating
-            if (course[key] !== undefined) {
-                // Handle special cases for JSON strings (e.g., tags, instructions)
-                if (key === "tag" || key === "instruction") {
-                    course[key] = JSON.parse(updates[key]);
-                } else {
-                    course[key] = updates[key];
-                }
-            }
+        // Handle special cases for JSON strings (e.g., tags, instructions)
+        if (updateData.tag) {
+          updateData.tag = JSON.parse(updateData.tag);
         }
-
-        await course.save();
-
-        const updatedCourse = await Course.findOne({
-            _id: courseId,
+        if (updateData.instruction) {
+          updateData.instruction = JSON.parse(updateData.instruction);
+        }
+        
+        // Use findByIdAndUpdate to perform a partial update without full schema validation
+        const updatedCourse = await Course.findByIdAndUpdate(
+            courseId,
+            updateData,
+            { new: true, runValidators: true } // Return the updated document and run validators on the updated fields
+        )
+        .populate({
+            path: "instructor",
+            populate: {
+                path: "additionalDetails",
+            },
         })
-            .populate({
-                path: "instructor",
-                populate: {
-                    path: "additionalDetails",
-                },
-            })
-            .populate("category")
-            .populate("ratingAndReview")
-            .populate({
-                path: "courseContent",
-                populate: {
-                    path: "subSection",
-                },
-            })
-            .exec();
+        .populate("category")
+        .populate("ratingAndReview") 
+        .populate({
+            path: "courseContent",
+            populate: {
+                path: "subSection",
+            },
+        })
+        .exec();
+
+        if (!updatedCourse) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found after update attempt." 
+            });
+        }
 
         res.json({
             success: true,
@@ -459,4 +469,69 @@ exports.deleteCourse = async (req, res) => {
             error: error.message,
         });
     }
+};
+
+exports.getFullCourseDetails = async (req, res) => {
+  try {
+    const { courseId } = req.body;
+    const userId = req.user.id;
+    const courseDetails = await Course.findOne({
+      _id: courseId,
+    })
+      .populate({
+        path: "instructor",
+        populate: {
+          path: "additionalDetails",
+        },
+      })
+      .populate("category")
+      .populate("ratingAndReview")
+      .populate({
+        path: "courseContent",
+        populate: {
+          path: "subSection",
+        },
+      })
+      .exec();
+
+    // let courseProgressCount = await CourseProgress.findOne({
+    //   courseID: courseId,
+    //   userId: userId,
+    // });
+
+    // console.log("courseProgressCount : ", courseProgressCount);
+
+    if (!courseDetails) {
+      return res.status(400).json({
+        success: false,
+        message: `Could not find course with id: ${courseId}`,
+      });
+    }
+
+    // let totalDurationInSeconds = 0;
+    // courseDetails.courseContent.forEach((content) => {
+    //   content.subSection.forEach((subSection) => {
+    //     const timeDurationInSeconds = parseInt(subSection.timeDuration);
+    //     totalDurationInSeconds += timeDurationInSeconds;
+    //   });
+    // });
+
+    // const totalDuration = convertSecondsToDuration(totalDurationInSeconds);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        courseDetails,
+        // totalDuration,
+        // completedVideos: courseProgressCount?.completedVideos
+        //   ? courseProgressCount?.completedVideos
+        //   : [],
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };

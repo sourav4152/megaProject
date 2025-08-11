@@ -3,7 +3,7 @@ const route =express.Router();
 
 const {createCategory, categoryPageDetails} =require("../controllers/category");
 
-const {createCourse, getCourseDetails, getEnrolledCourses, getInstructorCourses,deleteCourse, editCourse} =require("../controllers/course");
+const {createCourse, getCourseDetails, getEnrolledCourses, getInstructorCourses,deleteCourse, editCourse, getFullCourseDetails} =require("../controllers/course");
 
 
 const {showAllCategories} =require("../controllers/category");
@@ -27,6 +27,7 @@ route.post("/getCourseDetails",getCourseDetails);
 route.delete("/deleteCategory/:id",auth,isAdmin, );
 route.get("/showAllCategories",showAllCategories);
 
+route.post("/getFullCourseDetails", auth, getFullCourseDetails);
 route.post("/createCourse", auth, isInstructor, createCourse);
 route.post("/getYourCourses", auth, getEnrolledCourses);
 route.post("/updateCourse",auth,isInstructor,editCourse)
