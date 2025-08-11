@@ -52,7 +52,7 @@ const CourseInformationForm = () => {
             setValue("coursePrice", course.price);
             setValue("courseTags", course.tag); // Corrected from courseTags to tag
             setValue("courseBenefits", course.whatYouWillLearn);
-            setValue("courseCategory", course.category);
+            setValue("courseCategory", course.categories);
             setValue("instruction", course.instruction); // Corrected name from courseRequirements
             setValue("courseImage", course.thumbnail);
         }
@@ -77,6 +77,12 @@ const CourseInformationForm = () => {
     };
 
     const onSubmit = async (data) => {
+        {
+            console.log("Course details inside onsubmit:",course);
+            console.log("Data inside onsubmit:", data);
+            
+            
+        }
         if (editCourse) {
             if (isFormUpdated()) {
                 const currentValues = getValues();
@@ -97,7 +103,7 @@ const CourseInformationForm = () => {
                 if (currentValues.courseBenefits !== course.whatYouWillLearn) {
                     formData.append("whatYouWillLearn", data.courseBenefits);
                 }
-                if (currentValues.courseCategory._id !== course.category._id) {
+                if (currentValues.courseCategory._id !== course.categories._id) {
                     formData.append("category", data.courseCategory);
                 }
                 if (currentValues.instruction.toString() !== course.instruction.toString()) {

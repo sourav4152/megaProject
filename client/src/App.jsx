@@ -18,6 +18,7 @@ import EnrolledCourses from './components/core/dashboard/EnrolledCourses'
 import Cart from './components/core/dashboard/cart/index'
 import MyCourses from './components/core/dashboard/MyCourses'
 import AddCourse from './components/core/dashboard/addCourse/index'
+import EditCourse from './components/core/dashboard/editCourse'
 
 import Navbar from './components/common/Navbar'
 import MyProfile from './components/core/dashboard/MyProfile'
@@ -119,6 +120,7 @@ const App = () => {
               <>
                 <Route path="dashboard/my-courses" element={<MyCourses />} />
                 <Route path='dashboard/add-course' element={<AddCourse/>} />
+                <Route path='dashboard/edit-course/:courseId' element={<EditCourse/>}/>
               </>
             )
           }

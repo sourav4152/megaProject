@@ -37,6 +37,7 @@ export const profileEndPoint = {
 export const courseEndpoints = {
   GET_COURSE_AVERAGE_RATING_API: BASE_URL + "course/getAverageRating",
   GET_ALL_INSTRUCTOR_COURSES_API:BASE_URL+"course/getInstructorCourses",
+  GET_FULL_COURSE_DETAILS_AUTHENTICATED:BASE_URL + "course/getFullCourseDetails",
   DELETE_COURSE_API:BASE_URL+"course/deleteCourse",
   CREATE_COURSE_API: BASE_URL + "course/createCourse",
   EDIT_COURSE_API: BASE_URL + "course/updateCourse",
