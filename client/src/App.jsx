@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router'
 
@@ -10,6 +11,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import About from './pages/About'
 import Contact from './pages/Contact'
+import Catalog from './pages/Catalog'
 import ForgotPassword from './pages/ForgotPassword'
 import UpdatePassword from './pages/UpdatePassword'
 import VerifyEmail from './pages/VerifyEmail'
@@ -97,6 +99,8 @@ const App = () => {
             <Contact />
             // </OpenRoute>
           } />
+
+          <Route path="catalog/:catalogName" element={<Catalog />} />
 
         <Route
           element={
