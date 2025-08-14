@@ -119,6 +119,10 @@ exports.showAllCategories = async (req, res) => {
 }
 
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
 //category Page details 
 exports.categoryPageDetails = async (req, res) => {
   try {
@@ -126,9 +130,9 @@ exports.categoryPageDetails = async (req, res) => {
 
     const selectedCategory = await Category.findById(categoryId)
       .populate({
-        path: "courses",
+        path: "course",
         match: { status: "Published" },
-        populate: "ratingAndReviews",
+        populate: "ratingAndReview",
       })
       .exec();
 
@@ -139,7 +143,7 @@ exports.categoryPageDetails = async (req, res) => {
         .json({ success: false, message: "Category not found" });
     }
 
-    if (selectedCategory.courses.length === 0) {
+    if (selectedCategory.course.length === 0) {
       console.log("No courses found for the selected category.");
       return res.status(200).json({
         success: true,
@@ -155,7 +159,7 @@ exports.categoryPageDetails = async (req, res) => {
         ._id
     )
       .populate({
-        path: "courses",
+        path: "course",
         match: { status: "Published" },
       })
       .exec();
@@ -163,11 +167,11 @@ exports.categoryPageDetails = async (req, res) => {
 
     const allCategories = await Category.find()
       .populate({
-        path: "courses",
+        path: "course",
         match: { status: "Published" },
       })
       .exec();
-    const allCourses = allCategories.flatMap((category) => category.courses);
+    const allCourses = allCategories.flatMap((category) => category.course);
     const mostSellingCourses = allCourses
       .sort((a, b) => b.sold - a.sold)
       .slice(0, 10);
