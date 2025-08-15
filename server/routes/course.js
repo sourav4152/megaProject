@@ -16,7 +16,8 @@ const {createSubSection, deleteSubSection} = require("../controllers/subSection"
 
 const {createRating, getAverageRating, getAllRating} =require("../controllers/ratingAndReview")
 
-const {auth, isInstructor, isStudent, isAdmin}= require("../middlewares/authMiddleWares")
+const {auth, isInstructor, isStudent, isAdmin}= require("../middlewares/authMiddleWares");
+const { updateCourseProgress } = require("../controllers/CourseProgress");
 
 
 
@@ -43,6 +44,7 @@ route.post('/updateSubSection',auth,isInstructor,updateSection);
 route.delete('/deleteSubSection',auth,isInstructor,deleteSubSection)
 
 
+route.post("/updateCourseProgress", auth, isStudent, updateCourseProgress);
 route.post("/createRating", auth ,isStudent, createRating);
 route.post("/getAverageRating", getAverageRating);
 route.post("/getReviews" , getAllRating);
