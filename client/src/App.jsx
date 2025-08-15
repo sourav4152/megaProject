@@ -12,6 +12,7 @@ import Signup from './pages/Signup'
 import About from './pages/About'
 import Contact from './pages/Contact'
 import Catalog from './pages/Catalog'
+import CourseDetails from './pages/CourseDetails'
 import ForgotPassword from './pages/ForgotPassword'
 import UpdatePassword from './pages/UpdatePassword'
 import VerifyEmail from './pages/VerifyEmail'
@@ -101,6 +102,7 @@ const App = () => {
           } />
 
           <Route path="catalog/:catalogName" element={<Catalog />} />
+          <Route path="courses/:courseId" element={<CourseDetails />} />
 
         <Route
           element={

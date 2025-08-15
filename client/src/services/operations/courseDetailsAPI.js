@@ -15,7 +15,8 @@ const { GET_COURSE_AVERAGE_RATING_API,
   UPDATE_SUBSECTION_API,
   DELETE_SECTION_API,
   DELETE_SUBSECTION_API,
-  GET_FULL_COURSE_DETAILS_AUTHENTICATED
+  GET_FULL_COURSE_DETAILS_AUTHENTICATED,
+  COURSE_DETAILS_API,
 } = courseEndpoints
 
 const { CATEGORIES_API } = categories
@@ -329,5 +330,30 @@ export const deleteSubSection = async (data, token) => {
     toast.error(error?.response?.data?.message || error.message)
   }
   toast.dismiss(toastId)
+  return result
+}
+
+//course details API for all visiters
+export const fetchCourseDetails = async (courseId) => {
+  const toastId = toast.loading("Loading...")
+  //   dispatch(setLoading(true));
+  let result = null
+  try {
+    const response = await apiConnector("POST", COURSE_DETAILS_API, {
+      courseId,
+    })
+    console.log("COURSE_DETAILS_API API RESPONSE............", response)
+
+    if (!response.data.success) {
+      throw new Error(response.data.message)
+    }
+    result = response.data
+  } catch (error) {
+    console.log("COURSE_DETAILS_API API ERROR............", error)
+    result = error.response.data
+    // toast.error(error.response.data.message);
+  }
+  toast.dismiss(toastId)
+  //   dispatch(setLoading(false));
   return result
 }
