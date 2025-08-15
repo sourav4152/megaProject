@@ -1,8 +1,9 @@
 const Course = require("../models/course");
 const User = require("../models/user");
 const Category = require("../models/categories");
+const CourseProgress=require('../models/courseProgress')
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
-
+const { convertSecondsToDuration } = require("../utils/SecToDuration")
 
 function isFileTypeSupported(type, supportedTypes) {
 
@@ -253,56 +254,59 @@ exports.showAllCourses = async (req, res) => {
 //getCourseDetails 
 
 exports.getCourseDetails = async (req, res) => {
-    try {
+  try {
+    const { courseId } = req.body;
+    const courseDetails = await Course.findOne({
+      _id: courseId,
+    })
+      .populate({
+        path: "instructor",
+        populate: {
+          path: "additionalDetails",
+        },
+      })
+      .populate("category")
+      .populate("ratingAndReview")
+      .populate({
+        path: "courseContent",
+        populate: {
+          path: "subSection",
+          select: "-videoUrl",
+        },
+      })
+      .exec();
 
-        const { courseId } = req.body;
-
-        const courseDetails = await Course.find({ _id: courseId })
-            .populate(
-                {
-                    path: "instructor",
-                    populate: {
-                        path: "additionalDetails"
-                    }
-                }
-            )
-            .populate("category")
-            .populate("ratingAndReview")
-            .populate(
-                {
-                    path: "courseContent",
-                    populate: {
-                        path: "subSection"
-                    }
-                }
-            )
-            .exec();
-
-
-        if (!courseDetails) {
-            return res.status(404).json({
-                success: false,
-                message: "Course not found"
-            })
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: "Course details fetched successfully",
-            data: courseDetails
-        })
-
-
-
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            success: false,
-            message: "something went wrong while fetching course details"
-        })
-
+    if (!courseDetails) {
+      return res.status(400).json({
+        success: false,
+        message: `Could not find course with id: ${courseId}`,
+      });
     }
-}
+
+    let totalDurationInSeconds = 0;
+    courseDetails.courseContent.forEach((content) => {
+      content.subSection.forEach((subSection) => {
+        const timeDurationInSeconds = parseInt(subSection.timeDuration);
+        totalDurationInSeconds += timeDurationInSeconds;
+      });
+    });
+
+    const totalDuration = convertSecondsToDuration(totalDurationInSeconds);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        courseDetails,
+        totalDuration,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 //get enrolled courses of user
 
@@ -494,12 +498,12 @@ exports.getFullCourseDetails = async (req, res) => {
       })
       .exec();
 
-    // let courseProgressCount = await CourseProgress.findOne({
-    //   courseID: courseId,
-    //   userId: userId,
-    // });
+    let courseProgressCount = await CourseProgress.findOne({
+      courseID: courseId,
+      userId: userId,
+    });
 
-    // console.log("courseProgressCount : ", courseProgressCount);
+    console.log("courseProgressCount : ", courseProgressCount);
 
     if (!courseDetails) {
       return res.status(400).json({
@@ -508,24 +512,24 @@ exports.getFullCourseDetails = async (req, res) => {
       });
     }
 
-    // let totalDurationInSeconds = 0;
-    // courseDetails.courseContent.forEach((content) => {
-    //   content.subSection.forEach((subSection) => {
-    //     const timeDurationInSeconds = parseInt(subSection.timeDuration);
-    //     totalDurationInSeconds += timeDurationInSeconds;
-    //   });
-    // });
+    let totalDurationInSeconds = 0;
+    courseDetails.courseContent.forEach((content) => {
+      content.subSection.forEach((subSection) => {
+        const timeDurationInSeconds = parseInt(subSection.timeDuration);
+        totalDurationInSeconds += timeDurationInSeconds;
+      });
+    });
 
-    // const totalDuration = convertSecondsToDuration(totalDurationInSeconds);
+    const totalDuration = convertSecondsToDuration(totalDurationInSeconds);
 
     return res.status(200).json({
       success: true,
       data: {
         courseDetails,
-        // totalDuration,
-        // completedVideos: courseProgressCount?.completedVideos
-        //   ? courseProgressCount?.completedVideos
-        //   : [],
+        totalDuration,
+        completedVideos: courseProgressCount?.completedVideo
+          ? courseProgressCount?.completedVideo
+          : [],
       },
     });
   } catch (error) {
