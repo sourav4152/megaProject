@@ -1,23 +1,29 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-// import { useNavigate } from 'react-router'
+import React, { useState } from 'react'
+
+import { useDispatch, useSelector } from 'react-redux'
 
 import IconBtn from '../../../common/IconBtn'
+import { useNavigate } from 'react-router'
+import { BuyCourse } from '../../../../services/operations/studentFeaturesAPI'
 
 const RenderTotalAmount = () => {
 
-    const { cart, total } = useSelector((state) => state.cart)
-    // const { token } = useSelector((state) => state.auth)
-    // const { user } = useSelector((state) => state.profile)
+  const { cart, total } = useSelector((state) => state.cart)
+  const { token } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.profile)
+  const [loading, setLoading] = useState(false)
 
-    // const navigate = useNavigate()
-    // const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
-      const handleBuyCourse = () => {
+  const handleBuyCourse = () => {
+    setLoading(true);
     const courses = cart.map((course) => course._id)
-    console.log("Courses that you will buy: ",courses);
-    
-    // BuyCourse(token, courses, user, navigate, dispatch)
+    console.log("Courses that you will buy: ", courses);
+
+    BuyCourse(token, courses, user, navigate, dispatch)
+    setLoading(false)
+
   }
 
   return (
@@ -26,6 +32,7 @@ const RenderTotalAmount = () => {
       <p className="mb-6 text-3xl font-medium text-yellow-100">₹ {total}</p>
       <IconBtn
         text="Buy Now"
+        disabled={loading}
         onClickHandler={handleBuyCourse}
         customClasses="w-full justify-center"
       />
