@@ -95,7 +95,7 @@ export async function BuyCourse(
 
     } catch (error) {
         console.log("PAYMENT API ERROR:", error);
-        toast.error("Could Not make Payment.");
+        toast.error(error?.response?.data?.message || "Could Not make Payment.");
     }
     toast.dismiss(toastId);
 }
@@ -122,7 +122,7 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
 
     } catch (error) {
         console.log("PAYMENT VERIFY ERROR:", error);
-        toast.error("Could Not Verify Payment.");
+        toast.error(error?.response?.data?.message || "Could Not Verify Payment.");
     }
 
     toast.dismiss(toastId);
