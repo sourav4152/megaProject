@@ -15,7 +15,7 @@ const fileUpload = require("express-fileupload");
 const userRoutes = require("./routes/user");
 const profileRoutes = require("./routes/profile");
 const courseRoutes = require("./routes/course");
-// const paymentRoutes = require("./routes/payment");
+const paymentRoutes = require("./routes/payment");
 
 // Config imports
 const database = require("./config/database");
@@ -52,7 +52,7 @@ require("./cron/deleteScheduledUsers"); // Schedules background user deletions
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/course", courseRoutes);
-// app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/payment", paymentRoutes);
 
 // ========== Health Check ==========
 app.get("/", (req, res) => {
