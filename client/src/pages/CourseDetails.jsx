@@ -11,7 +11,7 @@ import CourseAccordionBar from "../components/core/course/CourseAccordionBar"
 import CourseDetailsCard from "../components/core/course/CourseDetailsCard"
 import { formatDate } from "../services/formatDate"
 import { fetchCourseDetails } from "../services/operations/courseDetailsAPI"
-// import { BuyCourse } from "../Service/Operation/studentFeaturesAPI"
+import { BuyCourse } from "../services/operations/studentFeaturesAPI"
 import GetAvgRating from "../utils/avgRating"
 import Error from "./Error"
 
@@ -116,8 +116,8 @@ function CourseDetails() {
 
   const handleBuyCourse = () => {
     if (token) {
-      // BuyCourse(token, [courseId], user, navigate, dispatch)
-      console.log("On By now:", token, [courseId]);
+      BuyCourse(token, [courseId], user, navigate, dispatch)
+      // console.log("On By now:", token, [courseId]);
 
       return
     }
