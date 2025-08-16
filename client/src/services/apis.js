@@ -36,9 +36,9 @@ export const profileEndPoint = {
 //Courses API
 export const courseEndpoints = {
   GET_COURSE_AVERAGE_RATING_API: BASE_URL + "course/getAverageRating",
-  GET_ALL_INSTRUCTOR_COURSES_API:BASE_URL+"course/getInstructorCourses",
-  GET_FULL_COURSE_DETAILS_AUTHENTICATED:BASE_URL + "course/getFullCourseDetails",
-  DELETE_COURSE_API:BASE_URL+"course/deleteCourse",
+  GET_ALL_INSTRUCTOR_COURSES_API: BASE_URL + "course/getInstructorCourses",
+  GET_FULL_COURSE_DETAILS_AUTHENTICATED: BASE_URL + "course/getFullCourseDetails",
+  DELETE_COURSE_API: BASE_URL + "course/deleteCourse",
   CREATE_COURSE_API: BASE_URL + "course/createCourse",
   EDIT_COURSE_API: BASE_URL + "course/updateCourse",
   CREATE_SECTION_API: BASE_URL + "course/addSection",
@@ -53,5 +53,12 @@ export const courseEndpoints = {
 
 //CatalogAPI
 export const catalogData = {
-  CATALOG_PAGEDATA_API: BASE_URL + "course/categoryPageDetails", 
+  CATALOG_PAGEDATA_API: BASE_URL + "course/categoryPageDetails",
+}
+
+//for payment
+export const studentEndpoints = {
+  COURSE_PAYMENT_API: BASE_URL + "payment/capturePayment",
+  COURSE_VERIFY_API: BASE_URL + "payment/verifyPayment",
+  SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "payment/sendPaymentSuccessEmail",
 }
