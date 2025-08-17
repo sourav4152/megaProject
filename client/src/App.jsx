@@ -17,6 +17,8 @@ import ForgotPassword from './pages/ForgotPassword'
 import UpdatePassword from './pages/UpdatePassword'
 import VerifyEmail from './pages/VerifyEmail'
 import DashBoard from './pages/DashBoard'
+import ViewCourse from './pages/ViewCourse'
+import VideoDetails from './components/core/viewCourse/VideoDetails'
 import EnrolledCourses from './components/core/dashboard/EnrolledCourses'
 import Cart from './components/core/dashboard/cart/index'
 import MyCourses from './components/core/dashboard/MyCourses'
@@ -131,6 +133,24 @@ const App = () => {
             )
           }
 
+        </Route>
+
+        <Route
+          element={
+            <PrivateRoute>
+              <ViewCourse />
+            </PrivateRoute>
+          }
+        >
+          {user?.accountType === ACCOUNT_TYPE.STUDENT && (
+            <>
+              <Route
+                path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId"
+                element={<VideoDetails />}
+               
+              />
+            </>
+          )}
         </Route>
 
       </Routes>
