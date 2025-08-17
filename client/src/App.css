@@ -47,6 +47,15 @@ details>summary::-webkit-details-marker {
   display: none;
 }
 
+/* Hide default styling of details/summary */
+details>summary {
+  list-style: none;
+}
+
+details>summary::-webkit-details-marker {
+  display: none;
+}
+
 .codeblock1 {
   width: 372.95px;
   height: 257.05px;
