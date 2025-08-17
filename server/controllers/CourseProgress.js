@@ -16,7 +16,7 @@ exports.updateCourseProgress = async (req, res) => {
       });
     }
     let courseProgress = await CourseProgress.findOne({
-      courseID: courseId,
+      courseId: courseId,
       userId: userId,
     });
     if (!courseProgress) {

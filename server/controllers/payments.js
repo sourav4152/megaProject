@@ -182,7 +182,7 @@ const enrollStudents = async (courses, userId, paymentDetails) => {
 
       // Create a CourseProgress entry for the student
       const courseProgress = await CourseProgress.create({
-        courseID: courseId,
+        courseId: courseId,
         userId: userId,
         completedVideos: [],
       });
