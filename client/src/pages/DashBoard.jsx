@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Outlet } from 'react-router'
 import { RingLoader } from 'react-spinners'
@@ -7,6 +7,10 @@ import Sidebar from '../components/core/dashboard/Sidebar'
 
 
 const DashBoard = () => {
+
+    useEffect(() => {
+        document.title = "StudyNotion-Dashboard"
+    }, [])
 
 
     const { loading: authLoading } = useSelector((state) => state.auth)

@@ -9,13 +9,17 @@ import { RxCountdownTimer } from "react-icons/rx"
 import { signUp, sendOtp } from '../services/operations/authAPI';
 
 const VerifyEmail = () => {
-    
+
+    useEffect(() => {
+        document.title = "StudyNotion-VerifyEmail"
+    }, [])
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    
+
     const { loading, signupData } = useSelector((state) => state.auth);
     useEffect(() => {
-        
+
         if (!signupData) {
             navigate("/signup");
         }

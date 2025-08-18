@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import BannerImage1 from '../assets/Image/aboutus1.webp'
 import BannerImage2 from '../assets/Image/aboutus2.webp'
@@ -13,6 +13,9 @@ import ContactFormSection from '../components/core/About/ContactFormSection'
 import Footer from '../components/common/Footer'
 
 const About = () => {
+    useEffect(() => {
+        document.title = "StudyNotion-About"
+    }, [])
     return (
         <>
             {/* section 1  */}
@@ -119,7 +122,7 @@ const About = () => {
                 </h1>
                 {/* <ReviewSlider /> */}
             </div>
-            <Footer/>
+            <Footer />
 
         </>
     )

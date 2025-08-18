@@ -1,7 +1,12 @@
+import { useEffect } from "react"
 import loginImg from "../assets/Image/login.webp"
 import Template from "../components/core/Auth/Template"
 
 function Login() {
+
+  useEffect(() => {
+    document.title = "StudyNotion-Login"
+  }, [])
   return (
     <Template
       title="Welcome Back"

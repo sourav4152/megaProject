@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BiArrowBack } from "react-icons/bi"
 import { Link } from "react-router"
@@ -8,17 +8,20 @@ import { getPasswordResetToken } from '../services/operations/authAPI'
 
 const ForgotPassword = () => {
 
+    useEffect(() => {
+        document.title = "StudyNotion-Forgot_Password"
+    }, [])
 
     const { loading } = useSelector((state) => state.auth);
     const [email, setEmail] = useState("");
-    const [emailSent, setEmailSent]= useState(false);
+    const [emailSent, setEmailSent] = useState(false);
     const dispatch = useDispatch();
 
     const handleOnSubmit = (e) => {
-    e.preventDefault()
-    dispatch(getPasswordResetToken(email, setEmailSent));
-    
-  }
+        e.preventDefault()
+        dispatch(getPasswordResetToken(email, setEmailSent));
+
+    }
 
     return (
         <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">

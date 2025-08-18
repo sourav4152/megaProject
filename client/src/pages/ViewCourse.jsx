@@ -22,6 +22,9 @@ export default function ViewCourse() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "StudyNotion-View-Courses"
+  }, [])
+  useEffect(() => {
     ; (async () => {
       // MODIFIED: Set loading to true before the API call starts
       setLoading(true);

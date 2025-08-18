@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router'
 import { FaArrowRight } from 'react-icons/fa'
 
@@ -15,6 +15,11 @@ import ReviewSlider from '../components/core/HomePage/ReviewSlider'
 import Footer from '../components/common/Footer'
 
 const Home = () => {
+
+    useEffect( ()=>{
+        document.title="StudyNotion-Home"
+    },[])
+
     return (
         <div>
             {/* Section 1 */}

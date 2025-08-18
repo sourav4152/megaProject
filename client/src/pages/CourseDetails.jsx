@@ -19,6 +19,10 @@ import Error from "./Error"
 import { RingLoader } from 'react-spinners'
 
 function CourseDetails() {
+
+  useEffect(() => {
+    document.title = "StudyNotion-Course-Details"
+  }, [])
   const { user } = useSelector((state) => state.profile)
   const { token } = useSelector((state) => state.auth)
   const { loading } = useSelector((state) => state.profile)
@@ -54,7 +58,7 @@ function CourseDetails() {
     const count = GetAvgRating(response?.data?.courseDetails.ratingAndReview)
     setAvgReviewCount(count)
     // console.log("setAvgReviewCount",avgReviewCount);
-    
+
   }, [response])
 
 
@@ -227,12 +231,12 @@ function CourseDetails() {
             <div className="mt-5">
               <ul style={{ listStyle: 'none', padding: 0 }} className="leading-relaxed">
                 {
-                whatYouWillLearn.split('\n').map((line, index) => (
-                  <li key={index} style={{ display: 'flex', alignItems: 'flex-start' }}>
-                    <span style={{ marginRight: '0.5em' }}>{index + 1}.</span>
-                    <span>{line.trim()}</span>
-                  </li>
-                ))
+                  whatYouWillLearn.split('\n').map((line, index) => (
+                    <li key={index} style={{ display: 'flex', alignItems: 'flex-start' }}>
+                      <span style={{ marginRight: '0.5em' }}>{index + 1}.</span>
+                      <span>{line.trim()}</span>
+                    </li>
+                  ))
                 }
               </ul>
             </div>

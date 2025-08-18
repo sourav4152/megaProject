@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import ContactDetails from '../components/core/contactUsPage/ContactDetails'
 import ContactForm from '../components/core/contactUsPage/ContactForm'
 import Footer from '../components/common/Footer'
 
 const Contact = () => {
+
+    useEffect( ()=>{
+            document.title="StudyNotion-ContactUs"
+        },[])
     return (
         <div>
             <div className='mx-auto w-11/12 max-w-maxContent mt-20 flex flex-col justify-between gap-10 text-white lg:flex-row'>

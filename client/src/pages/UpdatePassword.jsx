@@ -1,45 +1,49 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import {Link, useLocation, useNavigate } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 
-import {AiOutlineEyeInvisible, AiOutlineEye} from 'react-icons/ai'
-import {BiArrowBack} from 'react-icons/bi'
+import { AiOutlineEyeInvisible, AiOutlineEye } from 'react-icons/ai'
+import { BiArrowBack } from 'react-icons/bi'
 
 import { resetPassword } from '../services/operations/authAPI';
 
 const UpdatePassword = () => {
 
-    const dispatch =useDispatch();
-    const location =useLocation();
+    useEffect(() => {
+        document.title = "StudyNotion-Update-Password"
+    }, [])
+
+    const dispatch = useDispatch();
+    const location = useLocation();
     const navigate = useNavigate();
 
-    const [formData, setFormData] =useState({
+    const [formData, setFormData] = useState({
         password: "",
-        confirmPassword:""
+        confirmPassword: ""
     })
 
-    const{password ,confirmPassword} =formData;
+    const { password, confirmPassword } = formData;
 
-    const[showPassword, setShowPassword] =useState(false);
-    const[showConfirmPassword, setShowConfirmPassword] =useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const { loading } = useSelector((state) => state.auth);
 
-    const handleOnChange =(e)=>{
-        setFormData((prevData)=>(
+    const handleOnChange = (e) => {
+        setFormData((prevData) => (
             {
-            ...prevData,
-            [e.target.name]: e.target.value
-        }
-    ))
+                ...prevData,
+                [e.target.name]: e.target.value
+            }
+        ))
     }
     const handleOnSubmit = (e) => {
-    e.preventDefault()
-    const token = location.pathname.split("/").at(-1)
-    dispatch(resetPassword(password, confirmPassword, token, navigate))
-  }
+        e.preventDefault()
+        const token = location.pathname.split("/").at(-1)
+        dispatch(resetPassword(password, confirmPassword, token, navigate))
+    }
 
-    
+
 
     return (
         <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
