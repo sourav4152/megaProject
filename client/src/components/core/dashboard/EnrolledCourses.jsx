@@ -80,7 +80,7 @@ const EnrolledCourses = () => {
                                                     course.courseDescription.split('\n').splice(0, 1).map((line, index) => (
                                                         <li key={index} style={{ display: 'flex', alignItems: 'flex-start' }} className="text-xs text-richblack-300">
                                                             <span style={{ marginRight: '0.5em' }}>{index + 1}.</span>
-                                                            <span>{line.trim().substring(line.indexOf('.') + 1).trim().slice(0, 50)}{line.length > 50 ? '...' : ''}</span>
+                                                            <span>{line.trim().slice(0, 50)}{line.length > 50 ? '...' : ''}</span>
                                                         </li>
                                                     ))
                                                 }
