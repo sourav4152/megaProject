@@ -59,16 +59,15 @@ const RenderCartCourses = () => {
                                             <span className="text-yellow-5">{averageRatings[course._id].toFixed(1)}</span>
                                             <ReactStars
                                                 count={5}
-                                                value={averageRatings[course._id]}
+                                                rating={averageRatings[course._id]}
                                                 edit={false}
-                                                activeColor="#ffd700"
-                                                emptyIcon={<FaStar color="#585D67" />}
-                                                fullIcon={<FaStar color="#E7C000" />}
+                                                starRatedColor="#E7C000"
+                                                starEmptyColor="#585D67"
                                                 starDimension="20px"
                                                 starSpacing="4px"
                                             />
                                             <span className="text-richblack-400">
-                                                {course?.ratingAndReviews?.length || 0} Ratings
+                                                {course?.ratingAndReview?.length || 0} Ratings
                                             </span>
 
                                         </div>)

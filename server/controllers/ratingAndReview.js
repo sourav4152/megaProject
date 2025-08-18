@@ -26,7 +26,7 @@ exports.createRating = async (req, res) => {
     //  Check if user already reviewed
     const alreadyReviewed = await RatingAndReview.findOne({
       user: userId,
-      course: courseId  
+      course: courseId
     });
 
     if (alreadyReviewed) {
@@ -73,7 +73,7 @@ exports.getAverageRating = async (req, res) => {
     const result = await RatingAndReview.aggregate([
       {
         $match: {
-          course:new  mongoose.Types.ObjectId(courseId) 
+          course: courseId   // <-- Direct string match
         }
       },
       {
@@ -113,7 +113,7 @@ exports.getAverageRating = async (req, res) => {
 exports.getAllRating = async (req, res) => {
   try {
     const allReview = await RatingAndReview.find({})
-      .sort({ rating: -1 }) 
+      .sort({ rating: -1 })
       .populate({
         path: "user",
         select: "firstName lastName email image"
@@ -126,7 +126,7 @@ exports.getAllRating = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "All ratings and reviews fetched successfully",
-      data: allReview 
+      data: allReview
     });
 
   } catch (error) {
