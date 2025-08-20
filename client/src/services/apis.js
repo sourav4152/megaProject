@@ -14,7 +14,7 @@ export const categories = {
 }
 
 export const contactUsEndpoint = {
-  CONTACT_US_API: BASE_URL + "/reach/contact",
+  CONTACT_US_API: BASE_URL + "reach/contact",
 }
 
 // SETTINGS PAGE API
