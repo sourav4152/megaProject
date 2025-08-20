@@ -16,6 +16,7 @@ const userRoutes = require("./routes/user");
 const profileRoutes = require("./routes/profile");
 const courseRoutes = require("./routes/course");
 const paymentRoutes = require("./routes/payment");
+const contactUs =require("./routes/ContactUs")
 
 // Config imports
 const database = require("./config/database");
@@ -53,6 +54,7 @@ app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/payment", paymentRoutes);
+app.use("/api/v1/reach", contactUs);
 
 // ========== Health Check ==========
 app.get("/", (req, res) => {
