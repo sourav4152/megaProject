@@ -47,7 +47,7 @@ route.delete('/deleteSubSection',auth,isInstructor,deleteSubSection)
 route.post("/updateCourseProgress", auth, isStudent, updateCourseProgress);
 route.post("/createRating", auth ,isStudent, createRating);
 route.post("/getAverageRating", getAverageRating);
-route.post("/getReviews" , getAllRating);
+route.get("/getReviews" , getAllRating);
 
 route.get("/getInstructorCourses",auth,isInstructor,getInstructorCourses)
 
