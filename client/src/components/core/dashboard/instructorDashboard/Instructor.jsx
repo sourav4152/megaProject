@@ -23,8 +23,8 @@ const Instructor = () => {
             const instructorApiData = await getInstructorData(token)
             const result = await fetchInstructorCourses(token);
 
-            console.log("GetInstructorData:", instructorApiData);
-            console.log("Instructor Course:", result);
+            // console.log("GetInstructorData:", instructorApiData);
+            // console.log("Instructor Course:", result);
 
 
             if (instructorApiData) {

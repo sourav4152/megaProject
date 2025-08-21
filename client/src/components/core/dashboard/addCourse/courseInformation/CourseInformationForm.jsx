@@ -77,12 +77,10 @@ const CourseInformationForm = () => {
     };
 
     const onSubmit = async (data) => {
-        {
-            console.log("Course details inside onsubmit:",course);
-            console.log("Data inside onsubmit:", data);
-            
-            
-        }
+
+            // console.log("Course details inside onsubmit:",course);
+            // console.log("Data inside onsubmit:", data);
+
         if (editCourse) {
             if (isFormUpdated()) {
                 const currentValues = getValues();
@@ -103,7 +101,7 @@ const CourseInformationForm = () => {
                 if (currentValues.courseBenefits !== course.whatYouWillLearn) {
                     formData.append("whatYouWillLearn", data.courseBenefits);
                 }
-                if (currentValues.courseCategory._id !== course.categories._id) {
+                if (currentValues.courseCategory._id !== course.category._id) {
                     formData.append("category", data.courseCategory);
                 }
                 if (currentValues.instruction.toString() !== course.instruction.toString()) {
@@ -140,7 +138,7 @@ const CourseInformationForm = () => {
         setLoading(true);
         // The `addCourseDetails` call is present, but let's assume it's here
         const result = await addCourseDetails(formData, token); 
-        console.log("CREATED COURSE DETAILS RESULT:", result);
+        // console.log("CREATED COURSE DETAILS RESULT:", result);
         
         if (result) {
             dispatch(setStep(2));

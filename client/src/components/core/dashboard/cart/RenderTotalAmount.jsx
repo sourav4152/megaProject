@@ -19,7 +19,7 @@ const RenderTotalAmount = () => {
   const handleBuyCourse = () => {
     setLoading(true);
     const courses = cart.map((course) => course._id)
-    console.log("Courses that you will buy: ", courses);
+    // console.log("Courses that you will buy: ", courses);
 
     BuyCourse(token, courses, user, navigate, dispatch)
     setLoading(false)

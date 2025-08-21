@@ -20,11 +20,15 @@ export default function EditCourse() {
     ; (async () => {
       setLoading(true)
       const result = await getFullDetailsOfCourse(courseId, token)
+
+      // console.log("Full course Details:",result);
+      
+
       if (result?.courseDetails) {
         dispatch(setEditCourse(true))
         dispatch(setCourse(result?.courseDetails))
         {
-        console.log("Course inside EditCourse:",course);
+        // console.log("Course inside EditCourse:",course);
         }
       }
       setLoading(false)
