@@ -1,8 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { FiUploadCloud } from "react-icons/fi";
-// import { useSelector } from "react-redux";
-import ReactPlayer from "react-player"; // Corrected: Replaced video-react with react-player
 
 export default function Upload({
     name,
@@ -14,7 +13,6 @@ export default function Upload({
     viewData = null,
     editData = null,
 }) {
-    // const { course } = useSelector((state) => state.course);
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewSource, setPreviewSource] = useState(
         viewData ? viewData : editData ? editData : ""
@@ -24,7 +22,6 @@ export default function Upload({
     const onDrop = (acceptedFiles) => {
         const file = acceptedFiles[0];
         if (file) {
-            previewFile(file);
             setSelectedFile(file);
         }
     };
@@ -32,27 +29,41 @@ export default function Upload({
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         accept: !video
             ? { "image/*": [".jpeg", ".jpg", ".png"] }
-            : { "video/*": [".mp4", ".mov"] }, // Added .mov for common video formats
+            : { "video/*": [".mp4", ".mov"] },
         onDrop,
     });
 
-    const previewFile = (file) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = () => {
-            setPreviewSource(reader.result);
-        };
-    };
+    // Use a new useEffect to handle the file preview
+    useEffect(() => {
+        if (selectedFile) {
+            if (video) {
+                setPreviewSource(URL.createObjectURL(selectedFile));
+            } else {
+                const reader = new FileReader();
+                reader.readAsDataURL(selectedFile);
+                reader.onloadend = () => {
+                    setPreviewSource(reader.result);
+                };
+            }
+        }
+    }, [selectedFile, video]);
 
+    // The rest of the useEffects and code remain the same
     useEffect(() => {
         register(name, { required: true });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [register]);
 
     useEffect(() => {
         setValue(name, selectedFile);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedFile, setValue]);
+
+    useEffect(() => {
+        return () => {
+            if (previewSource && video) {
+                URL.revokeObjectURL(previewSource);
+            }
+        };
+    }, [previewSource, video]);
 
     return (
         <div className="flex flex-col space-y-2">
@@ -60,7 +71,7 @@ export default function Upload({
                 {label} {!viewData && <sup className="text-pink-200">*</sup>}
             </label>
             <div
-                className={`${isDragActive ? "bg-richblack-600" : "bg-richblack-700"} 
+                className={`${isDragActive ? "bg-richblack-600" : "bg-richblack-700"}
                 flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500`}
             >
                 {previewSource ? (
@@ -72,12 +83,13 @@ export default function Upload({
                                 className="h-full w-full rounded-md object-cover"
                             />
                         ) : (
-                            <ReactPlayer
-                                url={previewSource}
-                                width="100%"
-                                height="100%"
+                            // MODIFIED: Updated <video> tag attributes for manual control
+                            <video
+                                src={previewSource}
                                 controls
-                                playsinline
+                                muted
+                                loop={false}
+                                autoPlay={false}
                                 className="h-full w-full rounded-md object-cover"
                             />
                         )}
@@ -106,16 +118,16 @@ export default function Upload({
                         </div>
                         <p className="mt-2 max-w-[200px] text-center text-xs text-richblack-200 uppercase tracking-wider">
                             Drag and drop an {!video ? "image" : "video"}, or click to{" "}
-                            <span 
+                            <span
                                 onClick={(e) => {
-                                    e.stopPropagation(); // Prevents the event from bubbling up to the getRootProps div
+                                    e.stopPropagation();
                                     inputRef.current.click();
-                                }} 
+                                }}
                                 className="font-semibold text-yellow-50 cursor-pointer"
                             >
                                 Browse
-                            </span> a
-                            file
+                            </span>{" "}
+                            a file
                         </p>
                         <ul className="mt-10 flex list-disc justify-between space-x-12 text-center text-xs text-richblack-200 uppercase tracking-wider">
                             <li>Aspect ratio 16:9</li>
