@@ -33,6 +33,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { ACCOUNT_TYPE } from './utils/constants'
 import { getUserDetails } from './services/operations/profileAPI'
+import Instructor from './components/core/dashboard/instructorDashboard/Instructor'
 
 const App = () => {
 
@@ -128,6 +129,7 @@ const App = () => {
               <>
                 <Route path="dashboard/my-courses" element={<MyCourses />} />
                 <Route path='dashboard/add-course' element={<AddCourse/>} />
+                <Route path='dashboard/instructor' element={<Instructor/>}/>
                 <Route path='dashboard/edit-course/:courseId' element={<EditCourse/>}/>
               </>
             )
