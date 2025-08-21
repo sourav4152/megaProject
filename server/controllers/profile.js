@@ -1,5 +1,6 @@
 const User = require("../models/user")
 const Profile = require("../models/profile");
+const Course =require("../models/course")
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 require("dotenv").config();
 
@@ -253,3 +254,48 @@ exports.restoreAccount = async (req, res) => {
     });
   }
 };
+
+exports.instructorDashboard= async(req, res)=>{
+
+  try {
+
+    const instructorId = req.user.id;
+    const courseDetails= await Course.find({ instructor: instructorId });
+
+
+    if (!courseDetails || courseDetails.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No courses found for this instructor"
+      });
+    }
+
+    const courseData= courseDetails.map((course)=>{
+      const totalStudentsEnrolled= course.studentsEnrolled.length;
+      const totalAmountGenerated = course.price * totalStudentsEnrolled;
+      
+      const courseWithStats ={
+        _id: course._id,
+        courseName: course.courseName,
+        courseDescription: course.courseDescription,
+        totalStudentsEnrolled,
+        totalAmountGenerated
+      };
+      return courseWithStats;
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Instructor dashboard data fetched successfully",
+      data: courseData
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching instructor dashboard data",
+      error: error.message
+    });
+    
+  }
+}
