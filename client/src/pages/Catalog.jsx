@@ -9,7 +9,7 @@ import { RingLoader } from 'react-spinners'
 import Footer from "../components/common/Footer"
 import Course_Card from "../components/core/catalog/Course_Card"
 import Course_Slider from "../components/core/catalog/Course_Slider"
-import { apiConnector } from "../services/apiConnector"
+import { apiConnector } from "../services/apiconnector"
 import { categories } from "../services/apis"
 import { getCatalogPageData } from '../services/operations/pageAndComponentData'
 import Error from "./Error"
