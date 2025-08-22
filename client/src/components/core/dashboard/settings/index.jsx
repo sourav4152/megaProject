@@ -21,7 +21,7 @@ export default function Settings() {
       <UpdatePassword />
 
       {/* Delete Account */}
-      <DeleteAccount />
+      {/* <DeleteAccount /> */}
 
 
     </div>
