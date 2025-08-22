@@ -45,6 +45,17 @@ const ReviewSlider = () => {
           }}
           modules={[FreeMode, Pagination, Autoplay]}
           className="w-full"
+          breakpoints={{
+            0: {
+              slidesPerView: 1,
+            },
+            600: {
+              slidesPerView: 2,
+            },
+            1024: {
+              slidesPerView: reviews.length < 4 ? reviews.length % 4 : 4,
+            },
+          }}
         >
           {
             reviews.map((review, index) => (
