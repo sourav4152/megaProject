@@ -130,7 +130,7 @@ const Navbar = () => {
                 </nav>
 
                 {/* login / signup /dashboard */}
-                <div className="hidden items-center gap-x-4 sm:flex">
+                <div className="items-center gap-x-4 flex">
                     {user && user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR &&
                         (
                             <Link to="/dashboard/cart" className="relative">
