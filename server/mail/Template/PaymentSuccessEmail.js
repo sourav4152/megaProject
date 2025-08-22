@@ -67,7 +67,7 @@ exports.paymentSuccessEmail = (name, amount, orderId, paymentId) => {
     
     <body>
         <div class="container">
-            <a href="#"><img class="logo" src="https://i.ibb.co/7Xyj3PC/logo.png"
+            <a href="#"><img class="logo" src="https://res.cloudinary.com/dey3zako7/image/upload/v1755881059/rzp_logo_nkhbx5.png"
                     alt="StudyNotion Logo"></a>
             <div class="message">Course Payment Confirmation</div>
             <div class="body">

@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 exports.courseEnrollmentEmail = (courseName, name) => {
   return `<!DOCTYPE html>
   <html>
@@ -67,7 +69,7 @@ exports.courseEnrollmentEmail = (courseName, name) => {
   
   <body>
       <div class="container">
-          <a href="#"><img class="logo" src="https://i.ibb.co/7Xyj3PC/logo.png"
+          <a href="#"><img class="logo" src="https://res.cloudinary.com/dey3zako7/image/upload/v1755881059/rzp_logo_nkhbx5.png"
                   alt="StudyNotion Logo"></a>
           <div class="message">Course Registration Confirmation</div>
           <div class="body">
@@ -76,7 +78,7 @@ exports.courseEnrollmentEmail = (courseName, name) => {
                   are excited to have you as a participant!</p>
               <p>Please log in to your learning dashboard to access the course materials and start your learning journey.
               </p>
-              <a class="cta" href="#">Go to Dashboard</a>
+              <a class="cta" href="${process.env.FRONTEND_URL}/dashboard">Go to Dashboard</a>
           </div>
           <div class="support">If you have any questions or need assistance, please feel free to reach out to us at <a
                   href="mailto:guptasourav595@gmail.com">Sourav Gupta</a>. We are here to help!</div>

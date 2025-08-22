@@ -1,3 +1,4 @@
+require('dotenv').config();
 const User = require("../models/user")
 const crypto = require("node:crypto");
 const mailSender = require("../utils/mailSender");
@@ -41,7 +42,7 @@ exports.resetPasswordToken = async (req, res) => {
       { new: true }
     )
 
-    const url = `http://localhost:5173/update-password/${token}`
+    const url = `${process.env.FRONTEND_URL}/update-password/${token}`
 
     //send mail
 
