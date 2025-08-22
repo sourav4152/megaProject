@@ -32,7 +32,7 @@ app.use(cookieParser());
 
 // Enable CORS
 app.use(cors({
-    origin: "http://localhost:5173", // Frontend URL
+    origin: "https://studynotion-sourav-aw6jbyzrf-sourav-kumars-projects-051e5878.vercel.app", // Frontend URL
     credentials: true
 }));
 
