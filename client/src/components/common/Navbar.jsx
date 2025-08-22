@@ -58,11 +58,11 @@ const Navbar = () => {
         >
             <div className='flex w-11/12 max-w-maxContent items-center justify-between'>
                 {/* Logo */}
-                <Link to='/'>
+                <Link to='/' className=' hidden md:block '>
                     <img src={logo} alt="Logo" width={160} height={32} loading="lazy" />
                 </Link>
 
-                <nav className="hidden md:block">
+                <nav className="">
                     <ul className='flex gap-x-6 text-richblack-25 '>
                         {
                             NavbarLinks.map((link, index) => (
@@ -130,7 +130,7 @@ const Navbar = () => {
                 </nav>
 
                 {/* login / signup /dashboard */}
-                <div className="hidden items-center gap-x-4 md:flex">
+                <div className="hidden items-center gap-x-4 sm:flex">
                     {user && user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR &&
                         (
                             <Link to="/dashboard/cart" className="relative">
