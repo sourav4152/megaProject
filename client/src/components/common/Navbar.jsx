@@ -56,7 +56,7 @@ const Navbar = () => {
                 ${location.pathname !== "/" ? "bg-richblack-800" : ""
                 } transition-all duration-200`}
         >
-            <div className='flex w-11/12 max-w-maxContent items-center justify-between overflow-x-auto'>
+            <div className='flex w-11/12 max-w-maxContent items-center justify-between'>
                 {/* Logo */}
                 <Link to='/' className=' hidden md:block '>
                     <img src={logo} alt="Logo" width={160} height={32} loading="lazy" />
