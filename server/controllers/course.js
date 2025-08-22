@@ -223,14 +223,17 @@ exports.editCourse = async (req, res) => {
 exports.showAllCourses = async (req, res) => {
     try {
 
-        const allCourses = await Course.find({}, {
+        const allCourses = await Course.find(
+            { isDeleted: false },
+            {
             courseName: true,
             price: true,
             thumbnail: true,
             instructor: true,
             ratingAndReview: true,
             studentsEnrolled: true
-        }).populate("instructor").exec();
+            }
+        ).populate("instructor").exec();
 
         return res.status(200).json({
             success: true,
@@ -519,20 +522,21 @@ exports.getFullCourseDetails = async (req, res) => {
         const userId = req.user.id;
         const courseDetails = await Course.findOne({
             _id: courseId,
+            isDeleted: false, // Only fetch if not deleted
         })
             .populate({
-                path: "instructor",
-                populate: {
-                    path: "additionalDetails",
-                },
+            path: "instructor",
+            populate: {
+                path: "additionalDetails",
+            },
             })
             .populate("category")
             .populate("ratingAndReview")
             .populate({
-                path: "courseContent",
-                populate: {
-                    path: "subSection",
-                },
+            path: "courseContent",
+            populate: {
+                path: "subSection",
+            },
             })
             .exec();
 

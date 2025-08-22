@@ -130,9 +130,9 @@ exports.categoryPageDetails = async (req, res) => {
 
     const selectedCategory = await Category.findById(categoryId)
       .populate({
-        path: "course",
-        match: { status: "Published" },
-        populate: "ratingAndReview",
+      path: "course",
+      match: { status: "Published", isDeleted: false },
+      populate: "ratingAndReview",
       })
       .exec();
 
@@ -160,7 +160,7 @@ exports.categoryPageDetails = async (req, res) => {
     )
       .populate({
         path: "course",
-        match: { status: "Published" },
+        match: { status: "Published", isDeleted: false },
         populate: "ratingAndReview",
       })
       .exec();
@@ -169,11 +169,13 @@ exports.categoryPageDetails = async (req, res) => {
     const allCategories = await Category.find()
       .populate({
         path: "course",
-        match: { status: "Published" },
+        match: { status: "Published", isDeleted: false },
         populate: "ratingAndReview",
       })
       .exec();
-    const allCourses = allCategories.flatMap((category) => category.course);
+    const allCourses = allCategories.flatMap((category) =>
+      category.course.filter((course) => course.isDeleted === false)
+    );
     const mostSellingCourses = allCourses
       .sort((a, b) => b.sold - a.sold)
       .slice(0, 10);
