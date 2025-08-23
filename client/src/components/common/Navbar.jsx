@@ -14,6 +14,7 @@ import { ACCOUNT_TYPE } from '../../utils/constants';
 import { apiConnector } from '../../services/apiconnector';
 import { categories } from '../../services/apis';
 import ProfileDropdown from '../core/Auth/ProfileDropdown';
+import AuthDropdown from '../core/Auth/AuthDropdown';
 
 
 const Navbar = () => {
@@ -155,7 +156,7 @@ const Navbar = () => {
 
                     {token === null &&
                         (
-                            <Link to="/login">
+                            <Link to="/login" className='hidden md:block'>
                                 <button className="rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[8px] text-richblack-100 uppercase cursor-pointer">
                                     Log In
                                 </button>
@@ -165,7 +166,7 @@ const Navbar = () => {
 
                     {token === null &&
                         (
-                            <Link to="/signup">
+                            <Link to="/signup"  className='hidden md:block'>
                                 <button className="rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[8px] text-richblack-100 uppercase cursor-pointer">
                                     Sign Up
                                 </button>
@@ -173,8 +174,9 @@ const Navbar = () => {
                         )
                     }
 
-                    {token !== null && <ProfileDropdown />}
                 </div>
+                    {token !== null && <ProfileDropdown />}
+                    {token=== null && <AuthDropdown/>}
             </div>
         </div>
     );
