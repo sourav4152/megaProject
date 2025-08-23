@@ -42,7 +42,7 @@ exports.resetPasswordToken = async (req, res) => {
       { new: true }
     )
 
-    const url = `${process.env.FRONTEND_URL}/update-password/${token}`
+    const url = `https://studynotion-sourav.vercel.app/update-password/${token}`
 
     //send mail
 
